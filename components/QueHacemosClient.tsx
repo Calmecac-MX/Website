@@ -4,65 +4,19 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { Observer } from "gsap/Observer";
 import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
-import AboutSection from "@/components/AboutSection";
-import Timeline from "@/components/Timeline";
-import AboutSection2 from "@/components/AboutSection2";
-import CtaAviso from "@/components/CtaAviso";
+import QueHacemosHero from "@/components/QueHacemosHero";
+import MisionVision from "@/components/MisionVision";
+import MonumentalSystems from "@/components/MonumentalSystems";
+import PartnersSection from "@/components/PartnersSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
 
-if (typeof window !== "undefined") {
-  gsap.registerEffect({
-    name: "hoverGlow",
-    effect: (targets: gsap.DOMTarget, config: any) => {
-      return gsap.to(targets, {
-        color: config.color,
-        textShadow: `0 0 12px ${config.glowColor}`,
-        scale: config.scale,
-        y: config.y,
-        duration: config.duration,
-        ease: "back.out(2)",
-      });
-    },
-    defaults: {
-      color: "#2ECDB7",
-      glowColor: "rgba(46, 205, 183, 0.6)",
-      scale: 1.15,
-      y: -6,
-      duration: 0.3,
-    },
-    extendTimeline: true,
-  });
-
-  gsap.registerEffect({
-    name: "hoverReset",
-    effect: (targets: gsap.DOMTarget, config: any) => {
-      return gsap.to(targets, {
-        color: config.color,
-        textShadow: "none",
-        scale: 1,
-        y: 0,
-        duration: config.duration,
-        ease: "power2.out",
-      });
-    },
-    defaults: {
-      color: "",
-      duration: 0.3,
-    },
-    extendTimeline: true,
-  });
-}
-
-export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalStep, setModalStep] = useState(1);
+export default function QueHacemosClient() {
   const animatingRef = useRef(false);
   const currentIndexRef = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
-  const totalSlides = 7; // Hero, About, Timeline, About2, CtaAviso, Contact, Footer
+  const totalSlides = 6; // Hero, Misión/Visión, Monumental, Partners, Contacto, Footer
 
   const goToSlide = useCallback((index: number, direction: number = 0) => {
     if (animatingRef.current) return;
@@ -80,8 +34,8 @@ export default function Home() {
       dir = nextIndex > prevIndex ? 1 : -1;
     }
 
-    const prevSlide = document.getElementById(`slide-${prevIndex}`);
-    const nextSlide = document.getElementById(`slide-${nextIndex}`);
+    const prevSlide = document.getElementById(`hacemos-slide-${prevIndex}`);
+    const nextSlide = document.getElementById(`hacemos-slide-${nextIndex}`);
 
     if (!nextSlide) {
       animatingRef.current = false;
@@ -93,7 +47,6 @@ export default function Home() {
     const nextOuter = nextSlide.querySelector(".outer");
     const nextInner = nextSlide.querySelector(".inner");
 
-    // Targets inside each section to animate (backgrounds/wrappers) for parallax effect
     const nextBg = nextSlide.querySelector(
       ".structure-background, .plan-section, .hero-inner, .callout-grid, .provocation-inner, .contact-layout, .footer-quote-inner"
     );
@@ -133,24 +86,6 @@ export default function Home() {
     }
   }, []);
 
-  const handleComfortClick = () => {
-    const randomStep = Math.random() < 0.5 ? 1 : 2;
-    setModalStep(randomStep);
-    setIsModalOpen(true);
-  };
-
-  const handleModalAccept = () => {
-    setIsModalOpen(false);
-    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-      goToSlide(5); // Go to ContactSection (slide 5)
-    } else {
-      const contactSection = document.getElementById("contacto");
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
   const handleNavigate = (id: string, slideIdx: number) => {
     if (typeof window !== "undefined" && window.innerWidth >= 1024) {
       goToSlide(slideIdx);
@@ -169,16 +104,15 @@ export default function Home() {
 
     const setupSlider = () => {
       if (window.innerWidth >= 1024) {
-        if (isSliderActive) return; // already active
+        if (isSliderActive) return;
         isSliderActive = true;
 
         document.body.classList.add("swipe-slider-active");
 
-        // Initialize GSAP positioning for slides
-        const total = 7;
+        const total = 6;
         setActiveSlide(currentIndexRef.current);
         for (let i = 0; i < total; i++) {
-          const slide = document.getElementById(`slide-${i}`);
+          const slide = document.getElementById(`hacemos-slide-${i}`);
           if (slide) {
             const outer = slide.querySelector(".outer");
             const inner = slide.querySelector(".inner");
@@ -194,18 +128,17 @@ export default function Home() {
           }
         }
 
-        // Register GSAP Observer Plugin
         gsap.registerPlugin(Observer);
         observerInstance = Observer.create({
           type: "wheel,touch,pointer",
           wheelSpeed: -1,
           onDown: () => {
-            if (!animatingRef.current && !isModalOpen) {
+            if (!animatingRef.current) {
               goToSlide(currentIndexRef.current - 1, -1);
             }
           },
           onUp: () => {
-            if (!animatingRef.current && !isModalOpen) {
+            if (!animatingRef.current) {
               goToSlide(currentIndexRef.current + 1, 1);
             }
           },
@@ -214,12 +147,10 @@ export default function Home() {
           ignore: "input, textarea, select, button, a",
         });
       } else {
-        // Under 1024px (Mobile/Tablet): normal scrolling
         if (!isSliderActive && document.body.classList.contains("swipe-slider-active")) {
-          // Guard for initial clean load under 1024px
           document.body.classList.remove("swipe-slider-active");
         }
-        if (!isSliderActive) return; // already inactive
+        if (!isSliderActive) return;
         isSliderActive = false;
 
         document.body.classList.remove("swipe-slider-active");
@@ -229,10 +160,9 @@ export default function Home() {
           observerInstance = null;
         }
 
-        // Reset GSAP positioning styles for slides to clear inline transforms
-        const total = 7;
+        const total = 6;
         for (let i = 0; i < total; i++) {
-          const slide = document.getElementById(`slide-${i}`);
+          const slide = document.getElementById(`hacemos-slide-${i}`);
           if (slide) {
             slide.classList.remove("active-slide", "animating-slide");
             const outer = slide.querySelector(".outer");
@@ -243,16 +173,13 @@ export default function Home() {
       }
     };
 
-    // Run setup
     setupSlider();
 
-    // Listen to resize
     const handleResize = () => {
       setupSlider();
     };
     window.addEventListener("resize", handleResize);
 
-    // Intercept clicks on links pointing to page anchor IDs (for sliding navigation)
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest("a");
@@ -262,14 +189,14 @@ export default function Home() {
           if (window.innerWidth >= 1024) {
             e.preventDefault();
             const id = href.slice(1);
-            if (id === "" || id === "hero") {
+            if (id === "" || id === "que-hacemos-hero") {
               goToSlide(0);
             } else {
               const element = document.getElementById(id);
               if (element) {
                 const slide = element.closest(".swipe-section");
                 if (slide) {
-                  const slideIndex = parseInt(slide.id.split("-")[1], 10);
+                  const slideIndex = parseInt(slide.id.split("-")[2], 10); // ID: hacemos-slide-X
                   if (!isNaN(slideIndex)) {
                     goToSlide(slideIndex);
                   }
@@ -283,7 +210,7 @@ export default function Home() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (window.innerWidth < 1024) return;
-      if (animatingRef.current || isModalOpen) return;
+      if (animatingRef.current) return;
 
       const activeTag = document.activeElement?.tagName.toLowerCase();
       if (activeTag === "input" || activeTag === "textarea" || activeTag === "select") {
@@ -311,80 +238,71 @@ export default function Home() {
       window.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("click", handleAnchorClick);
     };
-  }, [goToSlide, isModalOpen]);
+  }, [goToSlide]);
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow swipe-container">
+      <main className="flex-grow swipe-container" style={{ background: "var(--black)" }}>
         {/* Slide 0: Hero */}
-        <div className="swipe-section" id="slide-0">
+        <div className="swipe-section" id="hacemos-slide-0">
           <div className="outer">
             <div className="inner">
-               <HeroSection onComfortClick={handleComfortClick} onNavigate={handleNavigate} />
+              <QueHacemosHero isActive={activeSlide === 0} />
             </div>
           </div>
         </div>
 
-        {/* Slide 1: Growth Structure */}
-        <div className="swipe-section" id="slide-1">
+        {/* Slide 1: Misión/Visión */}
+        <div className="swipe-section" id="hacemos-slide-1">
           <div className="outer">
             <div className="inner">
-              <AboutSection isActive={activeSlide === 1} />
+              <MisionVision isActive={activeSlide === 1} />
             </div>
           </div>
         </div>
 
-        {/* Slide 2: Timeline */}
-        <div className="swipe-section" id="slide-2">
+        {/* Slide 2: Monumental */}
+        <div className="swipe-section" id="hacemos-slide-2">
           <div className="outer">
             <div className="inner">
-              <Timeline isActive={activeSlide === 2} />
+              <MonumentalSystems isActive={activeSlide === 2} />
             </div>
           </div>
         </div>
 
-        {/* Slide 3: Callout */}
-        <div className="swipe-section" id="slide-3">
+        {/* Slide 3: Partners */}
+        <div className="swipe-section" id="hacemos-slide-3">
           <div className="outer">
             <div className="inner">
-              <AboutSection2 isActive={activeSlide === 3} onNavigate={handleNavigate} />
+              <PartnersSection isActive={activeSlide === 3} />
             </div>
           </div>
         </div>
 
-        {/* Slide 4: Provocation */}
-        <div className="swipe-section" id="slide-4">
+        {/* Slide 4: Contacto */}
+        <div className="swipe-section" id="hacemos-slide-4">
           <div className="outer">
             <div className="inner">
-               <CtaAviso isActive={activeSlide === 4} onNavigate={handleNavigate} />
+              <ContactSection isActive={activeSlide === 4} />
             </div>
           </div>
         </div>
 
-        {/* Slide 5: Contact */}
-        <div className="swipe-section" id="slide-5">
+        {/* Slide 5: Cierre / Footer */}
+        <div className="swipe-section" id="hacemos-slide-5">
           <div className="outer">
             <div className="inner">
-              <ContactSection isActive={activeSlide === 5} />
-            </div>
-          </div>
-        </div>
-
-        {/* Slide 6: Footer */}
-        <div className="swipe-section" id="slide-6">
-          <div className="outer">
-            <div className="inner">
-               <Footer onNavigate={handleNavigate} />
+              <Footer onNavigate={(id) => handleNavigate(id, 4)} />
             </div>
           </div>
         </div>
       </main>
 
-      {/* Navigation Dots (visible only when swipe-slider-active is true via CSS) */}
+      {/* Navigation Dots */}
       <div className="nav-dots">
         {Array.from({ length: totalSlides }).map((_, idx) => {
-          const names = ["Inicio", "Qué Hacemos", "El Plan", "Convocatoria", "Advertencia", "Contacto", "Cierre"];
+          const names = ["¿Qué hacemos?", "Misión/Visión", "Sistemas Monumentales", "Partners", "Contacto", "Cierre"];
           return (
             <button
               key={idx}
@@ -398,19 +316,7 @@ export default function Home() {
         })}
       </div>
 
-      {/* Bottom Fixed Navigation Menu */}
       <BottomMenu activeSlide={activeSlide} />
-
-      {/* Dynamic CtaAviso Modal Overlay */}
-      {isModalOpen && (
-        <CtaAviso
-          isModal={true}
-          initialStep={modalStep}
-          onAccept={handleModalAccept}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
     </div>
   );
 }
-
