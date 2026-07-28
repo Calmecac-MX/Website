@@ -76,7 +76,6 @@ export default function Header() {
             width={150}
             height={72}
             className="logo-calmecac-header"
-            style={{ height: "58px", width: "auto" }}
             priority
           />
         </Link>
