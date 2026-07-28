@@ -18,6 +18,52 @@ export default function PlanClient() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 6; // Hero, Mes 1, Mes 2, Mes 3, Contacto, Footer
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [seenSlides, setSeenSlides] = useState<number[]>([0]);
+
+  useEffect(() => {
+    setIsLargeScreen(window.innerWidth >= 1024);
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const sections = document.querySelectorAll(".swipe-container > .swipe-section");
+    if (sections.length === 0) return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -20% 0px",
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && window.innerWidth < 1024) {
+          const id = entry.target.id;
+          const match = id.match(/\d+$/);
+          if (match) {
+            const idx = parseInt(match[0], 10);
+            setActiveSlide(idx);
+            currentIndexRef.current = idx;
+            setSeenSlides((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
+          }
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((sec) => observer.observe(sec));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   const goToSlide = useCallback((index: number, direction: number = 0) => {
     if (animatingRef.current) return;
 
@@ -248,7 +294,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-0">
           <div className="outer">
             <div className="inner">
-              <PlanHero isActive={activeSlide === 0} />
+              <PlanHero isActive={isLargeScreen ? activeSlide === 0 : seenSlides.includes(0)} />
             </div>
           </div>
         </div>
@@ -257,7 +303,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-1">
           <div className="outer">
             <div className="inner">
-              <PlanMes1 isActive={activeSlide === 1} />
+              <PlanMes1 isActive={isLargeScreen ? activeSlide === 1 : seenSlides.includes(1)} />
             </div>
           </div>
         </div>
@@ -266,7 +312,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-2">
           <div className="outer">
             <div className="inner">
-              <PlanMes2 isActive={activeSlide === 2} />
+              <PlanMes2 isActive={isLargeScreen ? activeSlide === 2 : seenSlides.includes(2)} />
             </div>
           </div>
         </div>
@@ -275,7 +321,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-3">
           <div className="outer">
             <div className="inner">
-              <PlanMes3 isActive={activeSlide === 3} />
+              <PlanMes3 isActive={isLargeScreen ? activeSlide === 3 : seenSlides.includes(3)} />
             </div>
           </div>
         </div>
@@ -284,7 +330,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-4">
           <div className="outer">
             <div className="inner">
-              <ContactSection isActive={activeSlide === 4} />
+              <ContactSection isActive={isLargeScreen ? activeSlide === 4 : seenSlides.includes(4)} />
             </div>
           </div>
         </div>

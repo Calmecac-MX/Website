@@ -64,6 +64,52 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 7; // Hero, About, Timeline, About2, CtaAviso, Contact, Footer
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [seenSlides, setSeenSlides] = useState<number[]>([0]);
+
+  useEffect(() => {
+    setIsLargeScreen(window.innerWidth >= 1024);
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const sections = document.querySelectorAll(".swipe-container > .swipe-section");
+    if (sections.length === 0) return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -20% 0px",
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && window.innerWidth < 1024) {
+          const id = entry.target.id;
+          const match = id.match(/\d+$/);
+          if (match) {
+            const idx = parseInt(match[0], 10);
+            setActiveSlide(idx);
+            currentIndexRef.current = idx;
+            setSeenSlides((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
+          }
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((sec) => observer.observe(sec));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   const goToSlide = useCallback((index: number, direction: number = 0) => {
     if (animatingRef.current) return;
 
@@ -330,7 +376,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-1">
           <div className="outer">
             <div className="inner">
-              <AboutSection isActive={activeSlide === 1} />
+              <AboutSection isActive={isLargeScreen ? activeSlide === 1 : seenSlides.includes(1)} />
             </div>
           </div>
         </div>
@@ -339,7 +385,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-2">
           <div className="outer">
             <div className="inner">
-              <Timeline isActive={activeSlide === 2} />
+              <Timeline isActive={isLargeScreen ? activeSlide === 2 : seenSlides.includes(2)} />
             </div>
           </div>
         </div>
@@ -348,7 +394,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-3">
           <div className="outer">
             <div className="inner">
-              <AboutSection2 isActive={activeSlide === 3} onNavigate={handleNavigate} />
+              <AboutSection2 isActive={isLargeScreen ? activeSlide === 3 : seenSlides.includes(3)} onNavigate={handleNavigate} />
             </div>
           </div>
         </div>
@@ -357,7 +403,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-4">
           <div className="outer">
             <div className="inner">
-               <CtaAviso isActive={activeSlide === 4} onNavigate={handleNavigate} />
+               <CtaAviso isActive={isLargeScreen ? activeSlide === 4 : seenSlides.includes(4)} onNavigate={handleNavigate} />
             </div>
           </div>
         </div>
@@ -366,7 +412,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-5">
           <div className="outer">
             <div className="inner">
-              <ContactSection isActive={activeSlide === 5} />
+              <ContactSection isActive={isLargeScreen ? activeSlide === 5 : seenSlides.includes(5)} />
             </div>
           </div>
         </div>

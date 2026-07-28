@@ -14,6 +14,52 @@ export default function ContactoClient() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 2; // Contacto, Footer
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [seenSlides, setSeenSlides] = useState<number[]>([0]);
+
+  useEffect(() => {
+    setIsLargeScreen(window.innerWidth >= 1024);
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const sections = document.querySelectorAll(".swipe-container > .swipe-section");
+    if (sections.length === 0) return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -20% 0px",
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && window.innerWidth < 1024) {
+          const id = entry.target.id;
+          const match = id.match(/\d+$/);
+          if (match) {
+            const idx = parseInt(match[0], 10);
+            setActiveSlide(idx);
+            currentIndexRef.current = idx;
+            setSeenSlides((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
+          }
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((sec) => observer.observe(sec));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   const goToSlide = useCallback((index: number, direction: number = 0) => {
     if (animatingRef.current) return;
 
@@ -244,7 +290,7 @@ export default function ContactoClient() {
         <div className="swipe-section" id="contacto-slide-0">
           <div className="outer">
             <div className="inner">
-              <ContactoPageContent isActive={activeSlide === 0} />
+              <ContactoPageContent isActive={isLargeScreen ? activeSlide === 0 : seenSlides.includes(0)} />
             </div>
           </div>
         </div>
