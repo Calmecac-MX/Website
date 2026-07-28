@@ -64,51 +64,7 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 7; // Hero, About, Timeline, About2, CtaAviso, Contact, Footer
 
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
-  const [seenSlides, setSeenSlides] = useState<number[]>([0]);
 
-  useEffect(() => {
-    setIsLargeScreen(window.innerWidth >= 1024);
-    const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 1024);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const sections = document.querySelectorAll(".swipe-container > .swipe-section");
-    if (sections.length === 0) return;
-
-    const observerOptions = {
-      root: null,
-      rootMargin: "-20% 0px -20% 0px",
-      threshold: 0.1,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && window.innerWidth < 1024) {
-          const id = entry.target.id;
-          const match = id.match(/\d+$/);
-          if (match) {
-            const idx = parseInt(match[0], 10);
-            setActiveSlide(idx);
-            currentIndexRef.current = idx;
-            setSeenSlides((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
-          }
-        }
-      });
-    }, observerOptions);
-
-    sections.forEach((sec) => observer.observe(sec));
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   const goToSlide = useCallback((index: number, direction: number = 0) => {
     if (animatingRef.current) return;
@@ -187,25 +143,11 @@ export default function Home() {
 
   const handleModalAccept = () => {
     setIsModalOpen(false);
-    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-      goToSlide(5); // Go to ContactSection (slide 5)
-    } else {
-      const contactSection = document.getElementById("contacto");
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+    goToSlide(5); // Go to ContactSection (slide 5)
   };
 
   const handleNavigate = (id: string, slideIdx: number) => {
-    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-      goToSlide(slideIdx);
-    } else {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+    goToSlide(slideIdx);
   };
 
   useEffect(() => {
@@ -214,79 +156,50 @@ export default function Home() {
     let isSliderActive = false;
 
     const setupSlider = () => {
-      if (window.innerWidth >= 1024) {
-        if (isSliderActive) return; // already active
-        isSliderActive = true;
+      if (isSliderActive) return; // already active
+      isSliderActive = true;
 
-        document.body.classList.add("swipe-slider-active");
+      document.body.classList.add("swipe-slider-active");
 
-        // Initialize GSAP positioning for slides
-        const total = 7;
-        setActiveSlide(currentIndexRef.current);
-        for (let i = 0; i < total; i++) {
-          const slide = document.getElementById(`slide-${i}`);
-          if (slide) {
-            const outer = slide.querySelector(".outer");
-            const inner = slide.querySelector(".inner");
-            if (i === currentIndexRef.current) {
-              slide.classList.add("active-slide");
-              gsap.set(outer, { yPercent: 0 });
-              gsap.set(inner, { yPercent: 0 });
-            } else {
-              slide.classList.remove("active-slide", "animating-slide");
-              gsap.set(outer, { yPercent: 100 });
-              gsap.set(inner, { yPercent: -100 });
-            }
-          }
-        }
-
-        // Register GSAP Observer Plugin
-        gsap.registerPlugin(Observer);
-        observerInstance = Observer.create({
-          type: "wheel,touch,pointer",
-          wheelSpeed: -1,
-          onDown: () => {
-            if (!animatingRef.current && !isModalOpen) {
-              goToSlide(currentIndexRef.current - 1, -1);
-            }
-          },
-          onUp: () => {
-            if (!animatingRef.current && !isModalOpen) {
-              goToSlide(currentIndexRef.current + 1, 1);
-            }
-          },
-          tolerance: 15,
-          preventDefault: true,
-          ignore: "input, textarea, select, button, a",
-        });
-      } else {
-        // Under 1024px (Mobile/Tablet): normal scrolling
-        if (!isSliderActive && document.body.classList.contains("swipe-slider-active")) {
-          // Guard for initial clean load under 1024px
-          document.body.classList.remove("swipe-slider-active");
-        }
-        if (!isSliderActive) return; // already inactive
-        isSliderActive = false;
-
-        document.body.classList.remove("swipe-slider-active");
-
-        if (observerInstance) {
-          observerInstance.kill();
-          observerInstance = null;
-        }
-
-        // Reset GSAP positioning styles for slides to clear inline transforms
-        const total = 7;
-        for (let i = 0; i < total; i++) {
-          const slide = document.getElementById(`slide-${i}`);
-          if (slide) {
+      // Initialize GSAP positioning for slides
+      const total = 7;
+      setActiveSlide(currentIndexRef.current);
+      for (let i = 0; i < total; i++) {
+        const slide = document.getElementById(`slide-${i}`);
+        if (slide) {
+          const outer = slide.querySelector(".outer");
+          const inner = slide.querySelector(".inner");
+          if (i === currentIndexRef.current) {
+            slide.classList.add("active-slide");
+            gsap.set(outer, { yPercent: 0 });
+            gsap.set(inner, { yPercent: 0 });
+          } else {
             slide.classList.remove("active-slide", "animating-slide");
-            const outer = slide.querySelector(".outer");
-            const inner = slide.querySelector(".inner");
-            gsap.set([outer, inner], { clearProps: "all" });
+            gsap.set(outer, { yPercent: 100 });
+            gsap.set(inner, { yPercent: -100 });
           }
         }
       }
+
+      // Register GSAP Observer Plugin
+      gsap.registerPlugin(Observer);
+      observerInstance = Observer.create({
+        type: "wheel,touch,pointer",
+        wheelSpeed: -1,
+        onDown: () => {
+          if (!animatingRef.current && !isModalOpen) {
+            goToSlide(currentIndexRef.current - 1, -1);
+          }
+        },
+        onUp: () => {
+          if (!animatingRef.current && !isModalOpen) {
+            goToSlide(currentIndexRef.current + 1, 1);
+          }
+        },
+        tolerance: 15,
+        preventDefault: true,
+        ignore: "input, textarea, select, button, a",
+      });
     };
 
     // Run setup
@@ -305,20 +218,18 @@ export default function Home() {
       if (anchor) {
         const href = anchor.getAttribute("href");
         if (href && href.startsWith("#")) {
-          if (window.innerWidth >= 1024) {
-            e.preventDefault();
-            const id = href.slice(1);
-            if (id === "" || id === "hero") {
-              goToSlide(0);
-            } else {
-              const element = document.getElementById(id);
-              if (element) {
-                const slide = element.closest(".swipe-section");
-                if (slide) {
-                  const slideIndex = parseInt(slide.id.split("-")[1], 10);
-                  if (!isNaN(slideIndex)) {
-                    goToSlide(slideIndex);
-                  }
+          e.preventDefault();
+          const id = href.slice(1);
+          if (id === "" || id === "hero") {
+            goToSlide(0);
+          } else {
+            const element = document.getElementById(id);
+            if (element) {
+              const slide = element.closest(".swipe-section");
+              if (slide) {
+                const slideIndex = parseInt(slide.id.split("-")[1], 10);
+                if (!isNaN(slideIndex)) {
+                  goToSlide(slideIndex);
                 }
               }
             }
@@ -328,7 +239,6 @@ export default function Home() {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (window.innerWidth < 1024) return;
       if (animatingRef.current || isModalOpen) return;
 
       const activeTag = document.activeElement?.tagName.toLowerCase();
@@ -376,7 +286,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-1">
           <div className="outer">
             <div className="inner">
-              <AboutSection isActive={isLargeScreen ? activeSlide === 1 : seenSlides.includes(1)} />
+              <AboutSection isActive={activeSlide === 1} />
             </div>
           </div>
         </div>
@@ -385,7 +295,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-2">
           <div className="outer">
             <div className="inner">
-              <Timeline isActive={isLargeScreen ? activeSlide === 2 : seenSlides.includes(2)} />
+              <Timeline isActive={activeSlide === 2} />
             </div>
           </div>
         </div>
@@ -394,7 +304,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-3">
           <div className="outer">
             <div className="inner">
-              <AboutSection2 isActive={isLargeScreen ? activeSlide === 3 : seenSlides.includes(3)} onNavigate={handleNavigate} />
+              <AboutSection2 isActive={activeSlide === 3} onNavigate={handleNavigate} />
             </div>
           </div>
         </div>
@@ -403,7 +313,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-4">
           <div className="outer">
             <div className="inner">
-               <CtaAviso isActive={isLargeScreen ? activeSlide === 4 : seenSlides.includes(4)} onNavigate={handleNavigate} />
+               <CtaAviso isActive={activeSlide === 4} onNavigate={handleNavigate} />
             </div>
           </div>
         </div>
@@ -412,7 +322,7 @@ export default function Home() {
         <div className="swipe-section" id="slide-5">
           <div className="outer">
             <div className="inner">
-              <ContactSection isActive={isLargeScreen ? activeSlide === 5 : seenSlides.includes(5)} />
+              <ContactSection isActive={activeSlide === 5} />
             </div>
           </div>
         </div>
