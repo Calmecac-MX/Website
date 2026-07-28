@@ -14,51 +14,7 @@ export default function ContactoClient() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 2; // Contacto, Footer
 
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
-  const [seenSlides, setSeenSlides] = useState<number[]>([0]);
 
-  useEffect(() => {
-    setIsLargeScreen(window.innerWidth >= 1024);
-    const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 1024);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const sections = document.querySelectorAll(".swipe-container > .swipe-section");
-    if (sections.length === 0) return;
-
-    const observerOptions = {
-      root: null,
-      rootMargin: "-20% 0px -20% 0px",
-      threshold: 0.1,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && window.innerWidth < 1024) {
-          const id = entry.target.id;
-          const match = id.match(/\d+$/);
-          if (match) {
-            const idx = parseInt(match[0], 10);
-            setActiveSlide(idx);
-            currentIndexRef.current = idx;
-            setSeenSlides((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
-          }
-        }
-      });
-    }, observerOptions);
-
-    sections.forEach((sec) => observer.observe(sec));
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   const goToSlide = useCallback((index: number, direction: number = 0) => {
     if (animatingRef.current) return;
@@ -129,14 +85,7 @@ export default function ContactoClient() {
   }, []);
 
   const handleNavigate = (id: string, slideIdx: number) => {
-    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-      goToSlide(slideIdx);
-    } else {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+    goToSlide(slideIdx);
   };
 
   useEffect(() => {
@@ -145,74 +94,48 @@ export default function ContactoClient() {
     let isSliderActive = false;
 
     const setupSlider = () => {
-      if (window.innerWidth >= 1024) {
-        if (isSliderActive) return;
-        isSliderActive = true;
+      if (isSliderActive) return;
+      isSliderActive = true;
 
-        document.body.classList.add("swipe-slider-active");
+      document.body.classList.add("swipe-slider-active");
 
-        const total = 2;
-        setActiveSlide(currentIndexRef.current);
-        for (let i = 0; i < total; i++) {
-          const slide = document.getElementById(`contacto-slide-${i}`);
-          if (slide) {
-            const outer = slide.querySelector(".outer");
-            const inner = slide.querySelector(".inner");
-            if (i === currentIndexRef.current) {
-              slide.classList.add("active-slide");
-              gsap.set(outer, { yPercent: 0 });
-              gsap.set(inner, { yPercent: 0 });
-            } else {
-              slide.classList.remove("active-slide", "animating-slide");
-              gsap.set(outer, { yPercent: 100 });
-              gsap.set(inner, { yPercent: -100 });
-            }
-          }
-        }
-
-        gsap.registerPlugin(Observer);
-        observerInstance = Observer.create({
-          type: "wheel,touch,pointer",
-          wheelSpeed: -1,
-          onDown: () => {
-            if (!animatingRef.current) {
-              goToSlide(currentIndexRef.current - 1, -1);
-            }
-          },
-          onUp: () => {
-            if (!animatingRef.current) {
-              goToSlide(currentIndexRef.current + 1, 1);
-            }
-          },
-          tolerance: 15,
-          preventDefault: true,
-          ignore: "input, textarea, select, button, a",
-        });
-      } else {
-        if (!isSliderActive && document.body.classList.contains("swipe-slider-active")) {
-          document.body.classList.remove("swipe-slider-active");
-        }
-        if (!isSliderActive) return;
-        isSliderActive = false;
-
-        document.body.classList.remove("swipe-slider-active");
-
-        if (observerInstance) {
-          observerInstance.kill();
-          observerInstance = null;
-        }
-
-        const total = 2;
-        for (let i = 0; i < total; i++) {
-          const slide = document.getElementById(`contacto-slide-${i}`);
-          if (slide) {
+      const total = 2;
+      setActiveSlide(currentIndexRef.current);
+      for (let i = 0; i < total; i++) {
+        const slide = document.getElementById(`contacto-slide-${i}`);
+        if (slide) {
+          const outer = slide.querySelector(".outer");
+          const inner = slide.querySelector(".inner");
+          if (i === currentIndexRef.current) {
+            slide.classList.add("active-slide");
+            gsap.set(outer, { yPercent: 0 });
+            gsap.set(inner, { yPercent: 0 });
+          } else {
             slide.classList.remove("active-slide", "animating-slide");
-            const outer = slide.querySelector(".outer");
-            const inner = slide.querySelector(".inner");
-            gsap.set([outer, inner], { clearProps: "all" });
+            gsap.set(outer, { yPercent: 100 });
+            gsap.set(inner, { yPercent: -100 });
           }
         }
       }
+
+      gsap.registerPlugin(Observer);
+      observerInstance = Observer.create({
+        type: "wheel,touch,pointer",
+        wheelSpeed: -1,
+        onDown: () => {
+          if (!animatingRef.current) {
+            goToSlide(currentIndexRef.current - 1, -1);
+          }
+        },
+        onUp: () => {
+          if (!animatingRef.current) {
+            goToSlide(currentIndexRef.current + 1, 1);
+          }
+        },
+        tolerance: 15,
+        preventDefault: true,
+        ignore: "input, textarea, select, button, a",
+      });
     };
 
     setupSlider();
@@ -228,20 +151,18 @@ export default function ContactoClient() {
       if (anchor) {
         const href = anchor.getAttribute("href");
         if (href && href.startsWith("#")) {
-          if (window.innerWidth >= 1024) {
-            e.preventDefault();
-            const id = href.slice(1);
-            if (id === "" || id === "contacto") {
-              goToSlide(0);
-            } else {
-              const element = document.getElementById(id);
-              if (element) {
-                const slide = element.closest(".swipe-section");
-                if (slide) {
-                  const slideIndex = parseInt(slide.id.split("-")[2], 10); // ID: contacto-slide-X
-                  if (!isNaN(slideIndex)) {
-                    goToSlide(slideIndex);
-                  }
+          e.preventDefault();
+          const id = href.slice(1);
+          if (id === "" || id === "contacto") {
+            goToSlide(0);
+          } else {
+            const element = document.getElementById(id);
+            if (element) {
+              const slide = element.closest(".swipe-section");
+              if (slide) {
+                const slideIndex = parseInt(slide.id.split("-")[2], 10); // ID: contacto-slide-X
+                if (!isNaN(slideIndex)) {
+                  goToSlide(slideIndex);
                 }
               }
             }
@@ -251,7 +172,6 @@ export default function ContactoClient() {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (window.innerWidth < 1024) return;
       if (animatingRef.current) return;
 
       const activeTag = document.activeElement?.tagName.toLowerCase();
@@ -290,7 +210,7 @@ export default function ContactoClient() {
         <div className="swipe-section" id="contacto-slide-0">
           <div className="outer">
             <div className="inner">
-              <ContactoPageContent isActive={isLargeScreen ? activeSlide === 0 : seenSlides.includes(0)} />
+              <ContactoPageContent isActive={activeSlide === 0} />
             </div>
           </div>
         </div>
