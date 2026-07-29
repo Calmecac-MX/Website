@@ -130,7 +130,7 @@ export default function ContactoClient() {
 
       gsap.registerPlugin(Observer);
       observerInstance = Observer.create({
-        type: "wheel,touch,pointer",
+        type: "wheel,touch",
         wheelSpeed: -1,
         axis: "y",
         onDown: () => {
@@ -163,7 +163,7 @@ export default function ContactoClient() {
 
           goToSlide(currentIndexRef.current + 1, 1);
         },
-        tolerance: 15,
+        tolerance: 10,
         preventDefault: false,
         ignore: "input, textarea, select, button, a",
       } as any);

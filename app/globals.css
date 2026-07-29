@@ -1884,6 +1884,7 @@ body.swipe-slider-active .swipe-section {
     overflow: hidden;
     z-index: 0;
     visibility: hidden;
+    touch-action: none;
 }
 
 body.swipe-slider-active .swipe-section.active-slide {
@@ -1922,6 +1923,14 @@ html {
 }
 
 @media (max-width: 1023px) {
+  body.swipe-slider-active .swipe-section {
+    touch-action: none;
+  }
+  body.swipe-slider-active .section-card {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
   .section-card {
     padding: 100px 24px 60px 24px;
     height: auto;
