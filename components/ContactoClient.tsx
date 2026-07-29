@@ -7,8 +7,10 @@ import Header from "@/components/Header";
 import ContactoPageContent from "@/components/ContactoPageContent";
 import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
+import { useLoader } from "@/components/LoaderContext";
 
 export default function ContactoClient() {
+  const { isLoaded } = useLoader();
   const animatingRef = useRef(false);
   const currentIndexRef = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -219,7 +221,7 @@ export default function ContactoClient() {
         <div className="swipe-section" id="contacto-slide-0">
           <div className="outer">
             <div className="inner">
-              <ContactoPageContent isActive={activeSlide === 0} />
+               <ContactoPageContent isActive={activeSlide === 0 && isLoaded} />
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ import CtaAviso from "@/components/CtaAviso";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
+import { useLoader } from "@/components/LoaderContext";
 
 if (typeof window !== "undefined") {
   gsap.registerEffect({
@@ -57,6 +58,7 @@ if (typeof window !== "undefined") {
 }
 
 export default function Home() {
+  const { isLoaded } = useLoader();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState(1);
   const animatingRef = useRef(false);
@@ -286,7 +288,11 @@ export default function Home() {
         <div className="swipe-section" id="slide-0">
           <div className="outer">
             <div className="inner">
-               <HeroSection onComfortClick={handleComfortClick} onNavigate={handleNavigate} />
+               <HeroSection
+                 onComfortClick={handleComfortClick}
+                 onNavigate={handleNavigate}
+                 startAnimation={isLoaded}
+               />
             </div>
           </div>
         </div>

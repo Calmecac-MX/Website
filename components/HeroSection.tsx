@@ -7,9 +7,14 @@ import { gsap } from "gsap";
 interface HeroSectionProps {
   onComfortClick?: () => void;
   onNavigate?: (id: string, slideIdx: number) => void;
+  startAnimation?: boolean;
 }
 
-export default function HeroSection({ onComfortClick, onNavigate }: HeroSectionProps) {
+export default function HeroSection({
+  onComfortClick,
+  onNavigate,
+  startAnimation = true,
+}: HeroSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -68,6 +73,8 @@ export default function HeroSection({ onComfortClick, onNavigate }: HeroSectionP
   };
 
   useEffect(() => {
+    if (!startAnimation) return;
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
@@ -127,7 +134,7 @@ export default function HeroSection({ onComfortClick, onNavigate }: HeroSectionP
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [startAnimation]);
 
   return (
     <>

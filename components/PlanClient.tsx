@@ -11,8 +11,10 @@ import PlanMes3 from "@/components/PlanMes3";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
+import { useLoader } from "@/components/LoaderContext";
 
 export default function PlanClient() {
+  const { isLoaded } = useLoader();
   const animatingRef = useRef(false);
   const currentIndexRef = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -223,7 +225,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-0">
           <div className="outer">
             <div className="inner">
-              <PlanHero isActive={activeSlide === 0} />
+               <PlanHero isActive={activeSlide === 0 && isLoaded} />
             </div>
           </div>
         </div>

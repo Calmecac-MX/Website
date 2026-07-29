@@ -11,8 +11,10 @@ import ConvocatoriaProcesoCronograma from "@/components/ConvocatoriaProcesoCrono
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
+import { useLoader } from "@/components/LoaderContext";
 
 export default function ConvocatoriaClient() {
+  const { isLoaded } = useLoader();
   const animatingRef = useRef(false);
   const currentIndexRef = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -223,7 +225,7 @@ export default function ConvocatoriaClient() {
         <div className="swipe-section" id="convocatoria-slide-0">
           <div className="outer">
             <div className="inner">
-              <ConvocatoriaHero isActive={activeSlide === 0} />
+               <ConvocatoriaHero isActive={activeSlide === 0 && isLoaded} />
             </div>
           </div>
         </div>

@@ -11,8 +11,10 @@ import PartnersSection from "@/components/PartnersSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
+import { useLoader } from "@/components/LoaderContext";
 
 export default function NosotrosClient() {
+  const { isLoaded } = useLoader();
   const animatingRef = useRef(false);
   const currentIndexRef = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -223,7 +225,7 @@ export default function NosotrosClient() {
         <div className="swipe-section" id="nosotros-slide-0">
           <div className="outer">
             <div className="inner">
-              <NosotrosHero isActive={activeSlide === 0} />
+               <NosotrosHero isActive={activeSlide === 0 && isLoaded} />
             </div>
           </div>
         </div>

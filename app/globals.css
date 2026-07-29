@@ -3314,3 +3314,45 @@ body.swipe-slider-active .section-card {
   }
 }
 
+/* ==========================================================================
+   PRELOADER ANIMATIONS & STYLES
+   ========================================================================== */
+@keyframes spin-clockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-counter-clockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-slow-clockwise {
+  animation: spin-clockwise 30s linear infinite;
+}
+
+.animate-spin-medium-clockwise {
+  animation: spin-clockwise 15s linear infinite;
+}
+
+.animate-spin-medium-counter {
+  animation: spin-counter-clockwise 20s linear infinite;
+}
+
+.preloader-container {
+  background-color: transparent;
+}
+
+.shutter-left, .shutter-right {
+  will-change: transform;
+}
+
+

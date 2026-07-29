@@ -11,8 +11,10 @@ import PartnersSection from "@/components/PartnersSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
+import { useLoader } from "@/components/LoaderContext";
 
 export default function QueHacemosClient() {
+  const { isLoaded } = useLoader();
   const animatingRef = useRef(false);
   const currentIndexRef = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -223,7 +225,7 @@ export default function QueHacemosClient() {
         <div className="swipe-section" id="hacemos-slide-0">
           <div className="outer">
             <div className="inner">
-              <QueHacemosHero isActive={activeSlide === 0} />
+               <QueHacemosHero isActive={activeSlide === 0 && isLoaded} />
             </div>
           </div>
         </div>

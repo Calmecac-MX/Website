@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Roboto, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
+import { LoaderProvider } from "@/components/LoaderContext";
+import Preloader from "@/components/Preloader";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -29,7 +31,13 @@ export default function RootLayout({
       lang="es"
       className={`${roboto.variable} ${robotoCondensed.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <LoaderProvider>
+          <Preloader />
+          {children}
+        </LoaderProvider>
+      </body>
     </html>
   );
 }
+
