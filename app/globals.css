@@ -116,6 +116,12 @@ body.swipe-slider-active .section-card {
   border-radius: 0;
 }
 
+/* Allow the 3D tilt effect on the callout image to not be clipped */
+body.swipe-slider-active .callout-section.section-card {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 /* ==========================================================================
    BUTTONS
    ========================================================================== */
@@ -200,7 +206,6 @@ body.swipe-slider-active .section-card {
   font-size: 128px;
   color: transparent;
   -webkit-text-stroke: 2px var(--turquesa);
-  text-stroke: 2px var(--turquesa);
 }
 
 .hero-subtitle-container {
@@ -516,6 +521,7 @@ body.swipe-slider-active .section-card {
   position: relative;
   width: 100%;
   height: 560px;
+  max-height: 55vh;
   border-radius: 56px;
   padding: 18px;
   overflow: visible;
@@ -531,6 +537,7 @@ body.swipe-slider-active .section-card {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   border-radius: 36px;
   filter: grayscale(100%) contrast(1.05) brightness(0.95);
   transform: translateZ(30px);
@@ -596,10 +603,10 @@ body.swipe-slider-active .section-card {
 .about-btns {
   display: flex;
   flex-direction: row;
-  max-height: 52px;
   margin: 20px 0px;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 /* ==========================================================================
@@ -1215,7 +1222,12 @@ body.swipe-slider-active .plan-section {
   
   .about-btns {
     flex-direction: column;
-    max-height: none;
+    align-items: stretch;
+  }
+  
+  .about-btns .btn {
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -1937,9 +1949,6 @@ html {
 }
 
 @media (max-width: 1023px) {
-  body.swipe-slider-active .swipe-section {
-    /* touch-action managed by GSAP Observer with preventDefault: true */
-  }
   body.swipe-slider-active .section-card {
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
@@ -3534,7 +3543,7 @@ body.swipe-slider-active .section-card {
 @media (max-width: 767px) {
   body.swipe-slider-active #slide-3 .image-frame,
   body.swipe-slider-active #callout .image-frame {
-    height: 200px !important;
+    height: 280px !important;
     border-radius: 16px !important;
   }
 }
