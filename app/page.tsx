@@ -14,10 +14,23 @@ import Footer from "@/components/Footer";
 import BottomMenu from "@/components/BottomMenu";
 import { useLoader } from "@/components/LoaderContext";
 
+interface HoverGlowConfig {
+  color?: string;
+  glowColor?: string;
+  scale?: number;
+  y?: number;
+  duration?: number;
+}
+
+interface HoverResetConfig {
+  color?: string;
+  duration?: number;
+}
+
 if (typeof window !== "undefined") {
   gsap.registerEffect({
     name: "hoverGlow",
-    effect: (targets: gsap.DOMTarget, config: any) => {
+    effect: (targets: gsap.DOMTarget, config: HoverGlowConfig) => {
       return gsap.to(targets, {
         color: config.color,
         textShadow: `0 0 12px ${config.glowColor}`,
@@ -39,7 +52,7 @@ if (typeof window !== "undefined") {
 
   gsap.registerEffect({
     name: "hoverReset",
-    effect: (targets: gsap.DOMTarget, config: any) => {
+    effect: (targets: gsap.DOMTarget, config: HoverResetConfig) => {
       return gsap.to(targets, {
         color: config.color,
         textShadow: "none",
@@ -159,8 +172,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let observerInstance: any = null;
+    let observerInstance: Observer | null = null;
     let isSliderActive = false;
 
     const setupSlider = () => {
@@ -196,7 +208,6 @@ export default function Home() {
       observerInstance = Observer.create({
         type: "wheel,touch",
         wheelSpeed: -1,
-        axis: "y",
         onDown: () => {
           if (animatingRef.current || isModalOpen) return;
 
@@ -230,7 +241,7 @@ export default function Home() {
         tolerance: 10,
         preventDefault: false,
         ignore: "input, textarea, select, button, a",
-      } as any);
+      });
     };
 
     // Run setup

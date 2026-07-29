@@ -101,8 +101,7 @@ export default function ConvocatoriaClient() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let observerInstance: any = null;
+    let observerInstance: Observer | null = null;
     let isSliderActive = false;
 
     const setupSlider = () => {
@@ -136,7 +135,6 @@ export default function ConvocatoriaClient() {
       observerInstance = Observer.create({
         type: "wheel,touch",
         wheelSpeed: -1,
-        axis: "y",
         onDown: () => {
           if (animatingRef.current) return;
 
@@ -170,7 +168,7 @@ export default function ConvocatoriaClient() {
         tolerance: 10,
         preventDefault: false,
         ignore: "input, textarea, select, button, a",
-      } as any);
+      });
     };
 
     setupSlider();
