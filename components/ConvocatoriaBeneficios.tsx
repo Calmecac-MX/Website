@@ -75,17 +75,10 @@ export default function ConvocatoriaBeneficios({ isActive = false }: Convocatori
   return (
     <section
       id="convocatoria-beneficios"
-      className="section-card plan-section"
-      style={{
-        backgroundImage: "url(/assets/backgrounds/About.svg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      className="section-card plan-section convocatoria-beneficios-section"
       ref={containerRef}
     >
-      <div className="plan-header" style={{ marginBottom: "20px", width: "100%", textAlign: "center" }}>
+      <div className="plan-header convocatoria-plan-header" style={{ marginBottom: "20px" }}>
         <h2 className="allies-main-title opacity-0 font-heading text-2xl sm:text-4xl md:text-5xl font-extrabold text-center">
           BENEFICIOS <span className="blanco text-shine-solid">EXCLUSIVOS</span>
         </h2>
