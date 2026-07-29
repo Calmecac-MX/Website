@@ -132,6 +132,7 @@ export default function NosotrosClient() {
       observerInstance = Observer.create({
         type: "wheel,touch,pointer",
         wheelSpeed: -1,
+        axis: "y",
         onDown: () => {
           if (!animatingRef.current) {
             goToSlide(currentIndexRef.current - 1, -1);

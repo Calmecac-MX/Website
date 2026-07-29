@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 interface TimelineProps {
@@ -9,6 +9,20 @@ interface TimelineProps {
 
 export default function Timeline({ isActive = false }: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const staircaseRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
+  const touchStartRef = useRef({ x: 0, y: 0 });
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const splitText = (text: string, hoverColor: string, glowColor: string, hoverY: number = -6) => {
     return text.split("").map((char, index) => {
@@ -44,6 +58,7 @@ export default function Timeline({ isActive = false }: TimelineProps) {
     });
   };
 
+  // Main entry GSAP animations
   useEffect(() => {
     if (!isActive) return;
 
@@ -57,36 +72,46 @@ export default function Timeline({ isActive = false }: TimelineProps) {
         { y: 0, opacity: 1, rotateX: 0, duration: 0.9, stagger: 0.15, ease: "power3.out" }
       );
 
-      // Month cards staggered scale & slide up from bottom
-      tl.fromTo(
-        ".stair-card",
-        { y: 80, opacity: 0, scaleY: 0.9, rotate: -1 },
-        {
-          y: 0,
-          opacity: 1,
-          scaleY: 1,
-          rotate: 0,
-          duration: 1.2,
-          stagger: 0.2,
-          ease: "power4.out",
-          transformOrigin: "bottom center",
-        },
-        "-=0.6"
-      );
+      if (!isMobile) {
+        // Month cards staggered scale & slide up from bottom (Desktop)
+        tl.fromTo(
+          ".stair-card",
+          { y: 80, opacity: 0, scaleY: 0.9, rotate: -1 },
+          {
+            y: 0,
+            opacity: 1,
+            scaleY: 1,
+            rotate: 0,
+            duration: 1.2,
+            stagger: 0.2,
+            ease: "power4.out",
+            transformOrigin: "bottom center",
+          },
+          "-=0.6"
+        );
 
-      // Stagger timeline card headers letter by letter
-      tl.fromTo(
-        ".stair-card .split-char",
-        { y: "110%", opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          stagger: 0.015,
-          ease: "back.out(1.2)",
-        },
-        "-=0.6"
-      );
+        // Stagger timeline card headers letter by letter
+        tl.fromTo(
+          ".stair-card .split-char",
+          { y: "110%", opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.015,
+            ease: "back.out(1.2)",
+          },
+          "-=0.6"
+        );
+      } else {
+        // Mobile only: Slide up the staircase-container as a whole and fade in
+        tl.fromTo(
+          ".staircase-container",
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.0, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
 
       // Footer text reveal
       tl.fromTo(
@@ -98,7 +123,76 @@ export default function Timeline({ isActive = false }: TimelineProps) {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isActive]);
+  }, [isActive, isMobile]);
+
+  // Mobile horizontal slider sliding and card scaling animation
+  useEffect(() => {
+    if (!isMobile) {
+      // Clear properties on desktop
+      gsap.killTweensOf(".plan-section .staircase-container");
+      gsap.killTweensOf(".plan-section .stair-card");
+      gsap.set(".plan-section .staircase-container", { clearProps: "x,transform" });
+      gsap.set(".plan-section .stair-card", { clearProps: "scale,opacity" });
+      return;
+    }
+
+    const cardWidth = 280; // matches css
+    const gap = 20; // matches css
+    const parentWidth = containerRef.current?.offsetWidth || window.innerWidth;
+    // Calculate translation offset to center the active card
+    const targetX = (parentWidth - cardWidth) / 2 - activeMobileIndex * (cardWidth + gap);
+
+    gsap.to(".plan-section .staircase-container", {
+      x: targetX,
+      duration: 0.5,
+      ease: "power2.out",
+    });
+
+    const cards = gsap.utils.toArray(".plan-section .stair-card");
+    cards.forEach((card: any, idx: number) => {
+      if (idx === activeMobileIndex) {
+        gsap.to(card, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(card, {
+          scale: 0.88,
+          opacity: 0.35,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      }
+    });
+  }, [isMobile, activeMobileIndex]);
+
+  // Touch handlers for horizontal swipe detection
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const diffX = touchStartRef.current.x - endX;
+    const diffY = touchStartRef.current.y - endY;
+
+    // Detect horizontal swipe if delta X is larger than delta Y and exceeds threshold
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        // Swipe left -> Next module
+        setActiveMobileIndex((prev) => Math.min(prev + 1, 2));
+      } else {
+        // Swipe right -> Previous module
+        setActiveMobileIndex((prev) => Math.max(prev - 1, 0));
+      }
+    }
+  };
 
   return (
     <section id="plan" className="section-card plan-section" ref={containerRef}>
@@ -109,7 +203,12 @@ export default function Timeline({ isActive = false }: TimelineProps) {
         <p className="plan-subtitle opacity-0">Tu plan para alcanzar la verdadera madurez operativa</p>
       </div>
 
-      <div className="staircase-container">
+      <div 
+        className="staircase-container" 
+        ref={staircaseRef}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* Module 1 */}
         <div className="stair-card stair-1 opacity-0">
           <span className="stair-month">
@@ -150,6 +249,27 @@ export default function Timeline({ isActive = false }: TimelineProps) {
           </p>
         </div>
       </div>
+
+      {/* Pagination dots for mobile */}
+      {isMobile && (
+        <div className="mobile-dots-container">
+          {[0, 1, 2].map((idx) => {
+            const colors = ["#2ECDB7", "#ffdc7a", "#ff4ea8"];
+            return (
+              <button
+                key={idx}
+                className={`mobile-dot ${activeMobileIndex === idx ? "active" : ""}`}
+                onClick={() => setActiveMobileIndex(idx)}
+                style={{
+                  backgroundColor: activeMobileIndex === idx ? colors[idx] : "rgba(255, 255, 255, 0.25)",
+                  boxShadow: activeMobileIndex === idx ? `0 0 8px ${colors[idx]}` : "none",
+                }}
+                aria-label={`Módulo ${idx + 1}`}
+              />
+            );
+          })}
+        </div>
+      )}
 
       <div className="plan-footer">
         <p className="plan-footer-text opacity-0">Diseñamos estructuras capaces de crecer contigo</p>
