@@ -146,7 +146,7 @@ export default function PlanClient() {
         tolerance: 15,
         preventDefault: true,
         ignore: "input, textarea, select, button, a, [role='dialog']",
-      });
+      } as any);
     };
 
     setupSlider();

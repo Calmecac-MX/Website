@@ -142,7 +142,7 @@ export default function ContactoClient() {
         tolerance: 15,
         preventDefault: true,
         ignore: "input, textarea, select, button, a",
-      });
+      } as any);
     };
 
     setupSlider();

@@ -146,7 +146,7 @@ export default function NosotrosClient() {
         tolerance: 15,
         preventDefault: true,
         ignore: "input, textarea, select, button, a",
-      });
+      } as any);
     };
 
     setupSlider();

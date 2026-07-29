@@ -206,7 +206,7 @@ export default function Home() {
         tolerance: 15,
         preventDefault: true,
         ignore: "input, textarea, select, button, a",
-      });
+      } as any);
     };
 
     // Run setup
