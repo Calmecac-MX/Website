@@ -75,7 +75,7 @@ export default function ConvocatoriaRequisitos({ isActive = false }: Convocatori
       ref={containerRef}
     >
       <div className="plan-header" style={{ marginBottom: "35px" }}>
-        <h2 className="allies-main-title opacity-0 font-heading text-4xl md:text-5xl font-extrabold text-center">
+        <h2 className="allies-main-title opacity-0 font-heading text-2xl sm:text-4xl md:text-5xl font-extrabold text-center">
           REQUISITOS <span className="blanco text-shine-solid">DE POSTULACIÓN</span>
         </h2>
         <p className="allies-subtitle opacity-0 text-center text-magenta mt-1 font-subheading">

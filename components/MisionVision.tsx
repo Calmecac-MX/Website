@@ -91,7 +91,7 @@ export default function MisionVision({ isActive = false }: MisionVisionProps) {
       ref={containerRef}
     >
       <div className="plan-header" style={{ marginBottom: "50px" }}>
-        <h2 className="allies-main-title opacity-0 font-heading text-5xl font-extrabold text-center">
+        <h2 className="allies-main-title opacity-0 font-heading text-3xl md:text-5xl font-extrabold text-center">
           PROPÓSITO <span className="blanco text-shine-solid">Y ESTRATEGIA</span>
         </h2>
         <p className="allies-subtitle opacity-0 text-center text-menta mt-2 font-subheading">

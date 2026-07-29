@@ -223,7 +223,7 @@ export default function RifatelaNosotros({ isActive = false }: RifatelaNosotrosP
         <div className="divider" aria-hidden="true" />
         
         <div className="callout-inner text-wrap">
-          <h2 className="rifatela-title opacity-0 font-heading text-4xl font-extrabold text-magenta mb-4">
+          <h2 className="rifatela-title opacity-0 font-heading text-2xl md:text-4xl font-extrabold text-magenta mb-4">
             ¿QUÉ HACE RÍFATELA?
           </h2>
           <p className="callout-text opacity-0">

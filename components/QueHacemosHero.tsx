@@ -126,7 +126,7 @@ export default function QueHacemosHero({ isActive = false }: QueHacemosHeroProps
 
         <div className="hero-description-container">
           <p className="hero-description opacity-0">
-            <span className="hero-description-highlight turquesa font-bold text-xl block mb-4">CALMÉCAC es un programa de incubación de negocios diseñado para transformar empresas establecidas en organizaciones digitalmente estructuradas y escalables.</span>
+            <span className="hero-description-highlight turquesa font-bold text-base md:text-xl block mb-4">CALMÉCAC es un programa de incubación de negocios diseñado para transformar empresas establecidas en organizaciones digitalmente estructuradas y escalables.</span>
             Inspirado en las instituciones educativas del México antiguo, CALMÉCAC representa disciplina, estructura, crecimiento estratégico y excelencia operativa. Construimos la base digital, herramientas personalizadas y sistemas que tu empresa necesita para operar sin fricciones en el mercado moderno.
           </p>
         </div>

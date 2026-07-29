@@ -85,7 +85,7 @@ export default function PartnersSection({ isActive = false }: PartnersSectionPro
       ref={containerRef}
     >
       <div className="plan-header text-center" style={{ marginBottom: "50px" }}>
-        <h2 className="partners-section-title opacity-0 font-heading text-4xl md:text-5xl font-extrabold text-center">
+        <h2 className="partners-section-title opacity-0 font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-center">
           NUESTROS <span className="blanco text-shine-solid">PARTNERS</span>
         </h2>
         <p className="partners-section-subtitle opacity-0 text-center text-menta mt-2 font-subheading">

@@ -211,7 +211,7 @@ export default function PlanMes1({ isActive = false }: PlanMes1Props) {
       ref={containerRef}
     >
       <div className="plan-header" style={{ marginBottom: "25px" }}>
-        <h2 className="allies-main-title opacity-0 font-heading text-5xl font-extrabold text-center">
+        <h2 className="allies-main-title opacity-0 font-heading text-3xl md:text-5xl font-extrabold text-center">
           MÓDULO 1: <span className="blanco text-shine-solid">INFRAESTRUCTURA Y CRO</span>
         </h2>
         <p className="allies-subtitle opacity-0 text-center text-menta mt-1 font-subheading">

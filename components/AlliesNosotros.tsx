@@ -92,7 +92,7 @@ export default function AlliesNosotros({ isActive = false }: AlliesNosotrosProps
       ref={containerRef}
     >
       <div className="plan-header" style={{ marginBottom: "50px" }}>
-        <h2 className="allies-main-title opacity-0 font-heading text-5xl font-extrabold text-center">
+        <h2 className="allies-main-title opacity-0 font-heading text-3xl md:text-5xl font-extrabold text-center">
           NUESTROS <span className="blanco text-shine-solid">ALIADOS CLAVE</span>
         </h2>
         <p className="allies-subtitle opacity-0 text-center text-menta mt-2 font-subheading">

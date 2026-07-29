@@ -211,7 +211,7 @@ export default function PlanMes2({ isActive = false }: PlanMes2Props) {
       ref={containerRef}
     >
       <div className="plan-header" style={{ marginBottom: "25px" }}>
-        <h2 className="allies-main-title opacity-0 font-heading text-5xl font-extrabold text-center">
+        <h2 className="allies-main-title opacity-0 font-heading text-3xl md:text-5xl font-extrabold text-center">
           MÓDULO 2: <span className="blanco text-shine-solid">ADQUISICIÓN AGRESIVA</span>
         </h2>
         <p className="allies-subtitle opacity-0 text-center text-yellow mt-1 font-subheading" style={{ color: "#EAB308" }}>

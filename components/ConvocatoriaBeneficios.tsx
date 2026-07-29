@@ -84,7 +84,7 @@ export default function ConvocatoriaBeneficios({ isActive = false }: Convocatori
       ref={containerRef}
     >
       <div className="plan-header" style={{ marginBottom: "20px" }}>
-        <h2 className="allies-main-title opacity-0 font-heading text-4xl md:text-5xl font-extrabold text-center">
+        <h2 className="allies-main-title opacity-0 font-heading text-2xl sm:text-4xl md:text-5xl font-extrabold text-center">
           BENEFICIOS <span className="blanco text-shine-solid">EXCLUSIVOS</span>
         </h2>
         <p className="allies-subtitle opacity-0 text-center text-menta mt-1 font-subheading">

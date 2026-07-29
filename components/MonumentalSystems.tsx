@@ -192,7 +192,7 @@ export default function MonumentalSystems({ isActive = false }: MonumentalSystem
       </div>
 
       <div className="provocation-inner relative w-full text-center" style={{ maxWidth: "900px" }}>
-        <h2 className="monumental-title provocation-title opacity-0 font-heading text-6xl font-extrabold text-magenta mb-6 leading-tight">
+        <h2 className="monumental-title provocation-title opacity-0 font-heading text-3xl sm:text-4xl md:text-6xl font-extrabold text-magenta mb-6 leading-tight">
           CONSTRUIMOS <span className="blanco text-shine-solid">SISTEMAS OPERATIVOS</span> MONUMENTALES
         </h2>
         <p className="monumental-text provocation-text opacity-0 text-xl text-zinc-300 leading-relaxed mb-10">

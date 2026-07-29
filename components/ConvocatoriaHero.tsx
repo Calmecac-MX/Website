@@ -119,7 +119,7 @@ export default function ConvocatoriaHero({ isActive = false }: ConvocatoriaHeroP
 
         <div className="hero-description-container">
           <p className="hero-description opacity-0 text-sm md:text-base leading-relaxed max-w-4xl mx-auto">
-            <span className="hero-description-highlight turquesa font-bold text-lg md:text-xl block mb-4">¿Tu tienda en línea está lista para el siguiente nivel?</span>
+            <span className="hero-description-highlight turquesa font-bold text-base md:text-lg block mb-4">¿Tu tienda en línea está lista para el siguiente nivel?</span>
             En el México prehispánico, el <strong>Calmécac</strong> era el centro de educación superior reservado para formar a los líderes, estrategas, nobles y guerreros de élite. Inspirados en esa visión de grandeza, la aceleradora <strong>Rífatela</strong>, en estrecha colaboración con <strong>Tiendanube</strong>, ha creado la campaña <strong>Calmécac</strong>: una cohorte de aceleración diseñada para forjar a los próximos líderes del comercio electrónico.
             <br /><br />
             Buscamos emprendedores que ya tengan tracción y quieran optimizar su infraestructura, escalar sus ventas y consolidar su marca. Si facturas más de <strong>$100,000 MXN mensuales</strong> en tu e-commerce actual, es momento de rifártela y aplicar.
