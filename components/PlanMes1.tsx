@@ -6,14 +6,13 @@ import SessionDetailModal from "@/components/SessionDetailModal";
 
 interface PlanMes1Props {
   isActive?: boolean;
-  activeCard?: number;
-  onChangeCard?: (idx: number) => void;
 }
 
-export default function PlanMes1({ isActive = false, activeCard = 0, onChangeCard }: PlanMes1Props) {
+export default function PlanMes1({ isActive = false }: PlanMes1Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
   const touchStartRef = useRef({ x: 0, y: 0 });
 
   const sessions = [
@@ -135,7 +134,7 @@ export default function PlanMes1({ isActive = false, activeCard = 0, onChangeCar
     const cardWidth = 280; // matches css
     const gap = 20; // matches css
     const parentWidth = containerRef.current?.offsetWidth || window.innerWidth;
-    const targetX = (parentWidth - cardWidth) / 2 - activeCard * (cardWidth + gap);
+    const targetX = (parentWidth - cardWidth) / 2 - activeMobileIndex * (cardWidth + gap);
 
     gsap.to(containerRef.current?.querySelector(".allies-grid-container") || ".allies-grid-container", {
       x: targetX,
@@ -145,7 +144,7 @@ export default function PlanMes1({ isActive = false, activeCard = 0, onChangeCar
 
     const cards = gsap.utils.toArray(containerRef.current?.querySelectorAll(".session-card-plan") || ".session-card-plan");
     cards.forEach((card: any, idx: number) => {
-      if (idx === activeCard) {
+      if (idx === activeMobileIndex) {
         gsap.to(card, {
           scale: 1,
           opacity: 1,
@@ -161,7 +160,7 @@ export default function PlanMes1({ isActive = false, activeCard = 0, onChangeCar
         });
       }
     });
-  }, [isMobile, activeCard]);
+  }, [isMobile, activeMobileIndex]);
 
   // Touch handlers for horizontal swipe detection
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -191,9 +190,9 @@ export default function PlanMes1({ isActive = false, activeCard = 0, onChangeCar
 
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
       if (diffX > 0) {
-        onChangeCard?.(Math.min(activeCard + 1, sessions.length - 1));
+        setActiveMobileIndex((prev) => Math.min(prev + 1, sessions.length - 1));
       } else {
-        onChangeCard?.(Math.max(activeCard - 1, 0));
+        setActiveMobileIndex((prev) => Math.max(prev - 1, 0));
       }
     }
   };
@@ -285,21 +284,49 @@ export default function PlanMes1({ isActive = false, activeCard = 0, onChangeCar
         ))}
       </div>
 
-      {/* Pagination dots for mobile */}
+      {/* Controls container for mobile */}
       {isMobile && (
-        <div className="mobile-dots-container">
-          {sessions.map((_, idx) => (
-            <button
-              key={idx}
-              className={`mobile-dot ${activeCard === idx ? "active" : ""}`}
-              onClick={() => onChangeCard?.(idx)}
-              style={{
-                backgroundColor: activeCard === idx ? "#2ECDB7" : "rgba(255, 255, 255, 0.25)",
-                boxShadow: activeCard === idx ? "0 0 8px #2ECDB7" : "none",
-              }}
-              aria-label={`Sesión ${idx + 1}`}
-            />
-          ))}
+        <div className="mobile-controls-container">
+          <button
+            className="mobile-nav-btn"
+            onClick={() => setActiveMobileIndex((prev) => Math.max(prev - 1, 0))}
+            disabled={activeMobileIndex === 0}
+            style={{
+              opacity: activeMobileIndex === 0 ? 0.35 : 1,
+              pointerEvents: activeMobileIndex === 0 ? "none" : "auto",
+            }}
+            aria-label="Anterior"
+          >
+            ←
+          </button>
+          
+          <div className="mobile-dots-container">
+            {sessions.map((_, idx) => (
+              <button
+                key={idx}
+                className={`mobile-dot ${activeMobileIndex === idx ? "active" : ""}`}
+                onClick={() => setActiveMobileIndex(idx)}
+                style={{
+                  backgroundColor: activeMobileIndex === idx ? "#2ECDB7" : "rgba(255, 255, 255, 0.25)",
+                  boxShadow: activeMobileIndex === idx ? "0 0 8px #2ECDB7" : "none",
+                }}
+                aria-label={`Sesión ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            className="mobile-nav-btn"
+            onClick={() => setActiveMobileIndex((prev) => Math.min(prev + 1, sessions.length - 1))}
+            disabled={activeMobileIndex === sessions.length - 1}
+            style={{
+              opacity: activeMobileIndex === sessions.length - 1 ? 0.35 : 1,
+              pointerEvents: activeMobileIndex === sessions.length - 1 ? "none" : "auto",
+            }}
+            aria-label="Siguiente"
+          >
+            →
+          </button>
         </div>
       )}
 

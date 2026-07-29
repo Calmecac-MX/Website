@@ -18,51 +18,6 @@ export default function PlanClient() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 6; // Hero, Mes 1, Mes 2, Mes 3, Contacto, Footer
 
-  const [activeMes1Card, _setActiveMes1Card] = useState(0);
-  const activeMes1CardRef = useRef(0);
-  const setActiveMes1Card = (val: number | ((prev: number) => number)) => {
-    if (typeof val === "function") {
-      _setActiveMes1Card((prev) => {
-        const next = val(prev);
-        activeMes1CardRef.current = next;
-        return next;
-      });
-    } else {
-      _setActiveMes1Card(val);
-      activeMes1CardRef.current = val;
-    }
-  };
-
-  const [activeMes2Card, _setActiveMes2Card] = useState(0);
-  const activeMes2CardRef = useRef(0);
-  const setActiveMes2Card = (val: number | ((prev: number) => number)) => {
-    if (typeof val === "function") {
-      _setActiveMes2Card((prev) => {
-        const next = val(prev);
-        activeMes2CardRef.current = next;
-        return next;
-      });
-    } else {
-      _setActiveMes2Card(val);
-      activeMes2CardRef.current = val;
-    }
-  };
-
-  const [activeMes3Card, _setActiveMes3Card] = useState(0);
-  const activeMes3CardRef = useRef(0);
-  const setActiveMes3Card = (val: number | ((prev: number) => number)) => {
-    if (typeof val === "function") {
-      _setActiveMes3Card((prev) => {
-        const next = val(prev);
-        activeMes3CardRef.current = next;
-        return next;
-      });
-    } else {
-      _setActiveMes3Card(val);
-      activeMes3CardRef.current = val;
-    }
-  };
-
 
 
   const goToSlide = useCallback((index: number, direction: number = 0) => {
@@ -79,14 +34,6 @@ export default function PlanClient() {
     let dir = direction;
     if (dir === 0) {
       dir = nextIndex > prevIndex ? 1 : -1;
-    }
-
-    if (nextIndex === 1 && window.innerWidth < 768) {
-      setActiveMes1Card(dir === 1 ? 0 : 3);
-    } else if (nextIndex === 2 && window.innerWidth < 768) {
-      setActiveMes2Card(dir === 1 ? 0 : 3);
-    } else if (nextIndex === 3 && window.innerWidth < 768) {
-      setActiveMes3Card(dir === 1 ? 0 : 2);
     }
 
     const prevSlide = document.getElementById(`plan-slide-${prevIndex}`);
@@ -187,35 +134,13 @@ export default function PlanClient() {
         wheelSpeed: -1,
         axis: "y",
         onDown: () => {
-          if (animatingRef.current) return;
-          
-          const idx = currentIndexRef.current;
-          const isMobile = window.innerWidth < 768;
-
-          if (idx === 1 && isMobile && activeMes1CardRef.current > 0) {
-            setActiveMes1Card(prev => prev - 1);
-          } else if (idx === 2 && isMobile && activeMes2CardRef.current > 0) {
-            setActiveMes2Card(prev => prev - 1);
-          } else if (idx === 3 && isMobile && activeMes3CardRef.current > 0) {
-            setActiveMes3Card(prev => prev - 1);
-          } else {
-            goToSlide(idx - 1, -1);
+          if (!animatingRef.current) {
+            goToSlide(currentIndexRef.current - 1, -1);
           }
         },
         onUp: () => {
-          if (animatingRef.current) return;
-          
-          const idx = currentIndexRef.current;
-          const isMobile = window.innerWidth < 768;
-
-          if (idx === 1 && isMobile && activeMes1CardRef.current < 3) {
-            setActiveMes1Card(prev => prev + 1);
-          } else if (idx === 2 && isMobile && activeMes2CardRef.current < 3) {
-            setActiveMes2Card(prev => prev + 1);
-          } else if (idx === 3 && isMobile && activeMes3CardRef.current < 2) {
-            setActiveMes3Card(prev => prev + 1);
-          } else {
-            goToSlide(idx + 1, 1);
+          if (!animatingRef.current) {
+            goToSlide(currentIndexRef.current + 1, 1);
           }
         },
         tolerance: 15,
@@ -305,11 +230,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-1">
           <div className="outer">
             <div className="inner">
-              <PlanMes1 
-                isActive={activeSlide === 1} 
-                activeCard={activeMes1Card}
-                onChangeCard={setActiveMes1Card}
-              />
+              <PlanMes1 isActive={activeSlide === 1} />
             </div>
           </div>
         </div>
@@ -318,11 +239,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-2">
           <div className="outer">
             <div className="inner">
-              <PlanMes2 
-                isActive={activeSlide === 2} 
-                activeCard={activeMes2Card}
-                onChangeCard={setActiveMes2Card}
-              />
+              <PlanMes2 isActive={activeSlide === 2} />
             </div>
           </div>
         </div>
@@ -331,11 +248,7 @@ export default function PlanClient() {
         <div className="swipe-section" id="plan-slide-3">
           <div className="outer">
             <div className="inner">
-              <PlanMes3 
-                isActive={activeSlide === 3} 
-                activeCard={activeMes3Card}
-                onChangeCard={setActiveMes3Card}
-              />
+              <PlanMes3 isActive={activeSlide === 3} />
             </div>
           </div>
         </div>
