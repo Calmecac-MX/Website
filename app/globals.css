@@ -1223,7 +1223,13 @@ body.swipe-slider-active .plan-section {
 
   .callout-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 24px;
+    justify-items: center;
+    align-items: center;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
   }
   
   .divider {
@@ -1232,6 +1238,10 @@ body.swipe-slider-active .plan-section {
   
   .image-frame {
     height: 340px;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    justify-self: center;
     border-radius: 28px;
   }
   
@@ -1239,17 +1249,46 @@ body.swipe-slider-active .plan-section {
     border-radius: 0;
   }
   
+  .callout-inner {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
   .callout-text {
     font-size: 18px;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .callout-text strong {
+    text-align: center;
+    display: block;
+    margin: 18px auto 0 auto;
   }
   
   .about-btns {
-    flex-direction: column;
-    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    margin: 24px auto 0 auto;
+    gap: 16px;
+    flex-wrap: wrap;
   }
   
   .about-btns .btn {
-    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
   }
 }
@@ -2038,20 +2077,37 @@ html {
 
   .callout-section {
     padding: clamp(32px, 5vh, 60px) clamp(16px, 4vw, 24px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   .callout-grid {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 24px;
+    justify-items: center;
+    align-items: center;
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+    text-align: center;
   }
   .callout-inner {
     text-align: center;
     align-items: center;
+    justify-content: center;
     display: flex;
     flex-direction: column;
     width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
   }
   .image-frame {
-    height: 360px;
+    height: 340px;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    justify-self: center;
   }
 
   .provocation-section {
@@ -3102,13 +3158,45 @@ body.swipe-slider-active .section-card {
   justify-content: center;
   width: 100%;
   min-height: 100%;
-  padding: 48px 80px;
+  padding: clamp(80px, 11vh, 110px) var(--section-padding-x) clamp(80px, 11vh, 110px);
   background-image: url(/assets/backgrounds/About.svg);
   background-size: cover;
   background-position: center;
   overflow: hidden;
   box-sizing: border-box;
 }
+
+/* Swipe-slider integration: cb-section fills its container and centers */
+body.swipe-slider-active #convocatoria-slide-1 .inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+body.swipe-slider-active .cb-section {
+  min-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* On short desktop screens, adjust padding and enable vertical scroll */
+@media (max-height: 850px) and (min-width: 1024px) {
+  .cb-section {
+    padding: clamp(65px, 8vh, 85px) var(--section-padding-x) clamp(65px, 8vh, 85px);
+  }
+  body.swipe-slider-active #convocatoria-slide-1 .inner {
+    overflow-y: auto;
+  }
+}
+
 
 /* Header block */
 .cb-header {
@@ -3368,26 +3456,6 @@ body.swipe-slider-active .section-card {
   .cb-icon-wrap {
     flex-shrink: 0;
     margin-top: 2px;
-  }
-}
-
-/* Swipe-slider integration: cb-section fills its container */
-body.swipe-slider-active #convocatoria-slide-1 .inner {
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
-
-body.swipe-slider-active .cb-section {
-  min-height: 100%;
-  height: auto;
-}
-
-/* On short desktop screens, enable vertical scroll */
-@media (max-height: 850px) and (min-width: 1024px) {
-  body.swipe-slider-active #convocatoria-slide-1 .inner {
-    overflow-y: auto;
   }
 }
 
@@ -3701,7 +3769,20 @@ body.swipe-slider-active .cb-section {
 
 /* Enable scrollbars and top alignment on low height viewports and mobile screens */
 @media (max-height: 850px), (max-width: 1023px) {
-  body.swipe-slider-active .callout-section,
+  body.swipe-slider-active .callout-section {
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+
+  body.swipe-slider-active .callout-grid {
+    margin: auto !important;
+  }
+
   body.swipe-slider-active .contact-section-wrapper,
   body.swipe-slider-active #contacto-slide-0 .section-card {
     overflow-y: auto !important;
@@ -3719,11 +3800,26 @@ body.swipe-slider-active .cb-section {
 }
 
 @media (max-width: 767px) {
-  body.swipe-slider-active .callout-section,
   body.swipe-slider-active .contact-section-wrapper,
   body.swipe-slider-active #contacto-slide-0 .section-card {
     padding-top: 80px !important;
     padding-bottom: 100px !important;
+  }
+
+  body.swipe-slider-active .about-btns {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 20px auto 0 auto !important;
+    gap: 12px !important;
+  }
+
+  body.swipe-slider-active .about-btns .btn {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
   }
 }
 
@@ -3733,14 +3829,18 @@ body.swipe-slider-active .cb-section {
   body.swipe-slider-active #callout .image-frame {
     height: 250px !important;
     border-radius: 20px !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
   }
 }
 
 @media (max-width: 767px) {
   body.swipe-slider-active #slide-3 .image-frame,
   body.swipe-slider-active #callout .image-frame {
-    height: 280px !important;
+    height: 260px !important;
     border-radius: 16px !important;
+    max-width: 360px !important;
+    margin: 0 auto !important;
   }
 }
 
