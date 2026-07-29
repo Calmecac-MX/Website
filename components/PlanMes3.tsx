@@ -6,13 +6,14 @@ import SessionDetailModal from "@/components/SessionDetailModal";
 
 interface PlanMes3Props {
   isActive?: boolean;
+  activeCard?: number;
+  onChangeCard?: (idx: number) => void;
 }
 
-export default function PlanMes3({ isActive = false }: PlanMes3Props) {
+export default function PlanMes3({ isActive = false, activeCard = 0, onChangeCard }: PlanMes3Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
   const touchStartRef = useRef({ x: 0, y: 0 });
 
   const sessions = [
@@ -119,7 +120,7 @@ export default function PlanMes3({ isActive = false }: PlanMes3Props) {
     const cardWidth = 280; // matches css
     const gap = 20; // matches css
     const parentWidth = containerRef.current?.offsetWidth || window.innerWidth;
-    const targetX = (parentWidth - cardWidth) / 2 - activeMobileIndex * (cardWidth + gap);
+    const targetX = (parentWidth - cardWidth) / 2 - activeCard * (cardWidth + gap);
 
     gsap.to(containerRef.current?.querySelector(".allies-grid-container") || ".allies-grid-container", {
       x: targetX,
@@ -129,7 +130,7 @@ export default function PlanMes3({ isActive = false }: PlanMes3Props) {
 
     const cards = gsap.utils.toArray(containerRef.current?.querySelectorAll(".session-card-plan") || ".session-card-plan");
     cards.forEach((card: any, idx: number) => {
-      if (idx === activeMobileIndex) {
+      if (idx === activeCard) {
         gsap.to(card, {
           scale: 1,
           opacity: 1,
@@ -145,7 +146,7 @@ export default function PlanMes3({ isActive = false }: PlanMes3Props) {
         });
       }
     });
-  }, [isMobile, activeMobileIndex]);
+  }, [isMobile, activeCard]);
 
   // Touch handlers for horizontal swipe detection
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -175,9 +176,9 @@ export default function PlanMes3({ isActive = false }: PlanMes3Props) {
 
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
       if (diffX > 0) {
-        setActiveMobileIndex((prev) => Math.min(prev + 1, sessions.length - 1));
+        onChangeCard?.(Math.min(activeCard + 1, sessions.length - 1));
       } else {
-        setActiveMobileIndex((prev) => Math.max(prev - 1, 0));
+        onChangeCard?.(Math.max(activeCard - 1, 0));
       }
     }
   };
@@ -280,10 +281,10 @@ export default function PlanMes3({ isActive = false }: PlanMes3Props) {
             <button
               key={idx}
               className={`mobile-dot w-2 h-2 rounded-full transition-all`}
-              onClick={() => setActiveMobileIndex(idx)}
+              onClick={() => onChangeCard?.(idx)}
               style={{
-                backgroundColor: activeMobileIndex === idx ? "#ff4ea8" : "rgba(255, 255, 255, 0.25)",
-                boxShadow: activeMobileIndex === idx ? "0 0 8px #ff4ea8" : "none",
+                backgroundColor: activeCard === idx ? "#ff4ea8" : "rgba(255, 255, 255, 0.25)",
+                boxShadow: activeCard === idx ? "0 0 8px #ff4ea8" : "none",
               }}
               aria-label={`Sesión ${idx + 1}`}
             />

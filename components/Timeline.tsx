@@ -5,13 +5,14 @@ import { gsap } from "gsap";
 
 interface TimelineProps {
   isActive?: boolean;
+  activeCard?: number;
+  onChangeCard?: (idx: number) => void;
 }
 
-export default function Timeline({ isActive = false }: TimelineProps) {
+export default function Timeline({ isActive = false, activeCard = 0, onChangeCard }: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const staircaseRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
   const touchStartRef = useRef({ x: 0, y: 0 });
 
   // Detect mobile viewport
@@ -140,7 +141,7 @@ export default function Timeline({ isActive = false }: TimelineProps) {
     const gap = 20; // matches css
     const parentWidth = containerRef.current?.offsetWidth || window.innerWidth;
     // Calculate translation offset to center the active card
-    const targetX = (parentWidth - cardWidth) / 2 - activeMobileIndex * (cardWidth + gap);
+    const targetX = (parentWidth - cardWidth) / 2 - activeCard * (cardWidth + gap);
 
     gsap.to(".plan-section .staircase-container", {
       x: targetX,
@@ -150,7 +151,7 @@ export default function Timeline({ isActive = false }: TimelineProps) {
 
     const cards = gsap.utils.toArray(".plan-section .stair-card");
     cards.forEach((card: any, idx: number) => {
-      if (idx === activeMobileIndex) {
+      if (idx === activeCard) {
         gsap.to(card, {
           scale: 1,
           opacity: 1,
@@ -166,7 +167,7 @@ export default function Timeline({ isActive = false }: TimelineProps) {
         });
       }
     });
-  }, [isMobile, activeMobileIndex]);
+  }, [isMobile, activeCard]);
 
   // Touch handlers for horizontal swipe detection
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -198,10 +199,10 @@ export default function Timeline({ isActive = false }: TimelineProps) {
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
       if (diffX > 0) {
         // Swipe left -> Next module
-        setActiveMobileIndex((prev) => Math.min(prev + 1, 2));
+        onChangeCard?.(Math.min(activeCard + 1, 2));
       } else {
         // Swipe right -> Previous module
-        setActiveMobileIndex((prev) => Math.max(prev - 1, 0));
+        onChangeCard?.(Math.max(activeCard - 1, 0));
       }
     }
   };
@@ -271,11 +272,11 @@ export default function Timeline({ isActive = false }: TimelineProps) {
             return (
               <button
                 key={idx}
-                className={`mobile-dot ${activeMobileIndex === idx ? "active" : ""}`}
-                onClick={() => setActiveMobileIndex(idx)}
+                className={`mobile-dot ${activeCard === idx ? "active" : ""}`}
+                onClick={() => onChangeCard?.(idx)}
                 style={{
-                  backgroundColor: activeMobileIndex === idx ? colors[idx] : "rgba(255, 255, 255, 0.25)",
-                  boxShadow: activeMobileIndex === idx ? `0 0 8px ${colors[idx]}` : "none",
+                  backgroundColor: activeCard === idx ? colors[idx] : "rgba(255, 255, 255, 0.25)",
+                  boxShadow: activeCard === idx ? `0 0 8px ${colors[idx]}` : "none",
                 }}
                 aria-label={`Módulo ${idx + 1}`}
               />

@@ -64,6 +64,21 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 7; // Hero, About, Timeline, About2, CtaAviso, Contact, Footer
 
+  const [activeTimelineCard, _setActiveTimelineCard] = useState(0);
+  const activeTimelineCardRef = useRef(0);
+  const setActiveTimelineCard = (val: number | ((prev: number) => number)) => {
+    if (typeof val === "function") {
+      _setActiveTimelineCard((prev) => {
+        const next = val(prev);
+        activeTimelineCardRef.current = next;
+        return next;
+      });
+    } else {
+      _setActiveTimelineCard(val);
+      activeTimelineCardRef.current = val;
+    }
+  };
+
 
 
   const goToSlide = useCallback((index: number, direction: number = 0) => {
@@ -80,6 +95,10 @@ export default function Home() {
     let dir = direction;
     if (dir === 0) {
       dir = nextIndex > prevIndex ? 1 : -1;
+    }
+
+    if (nextIndex === 2 && window.innerWidth < 768) {
+      setActiveTimelineCard(dir === 1 ? 0 : 2);
     }
 
     const prevSlide = document.getElementById(`slide-${prevIndex}`);
@@ -194,13 +213,27 @@ export default function Home() {
         wheelSpeed: -1,
         axis: "y",
         onDown: () => {
-          if (!animatingRef.current && !isModalOpen) {
-            goToSlide(currentIndexRef.current - 1, -1);
+          if (animatingRef.current || isModalOpen) return;
+          
+          const idx = currentIndexRef.current;
+          const isMobile = window.innerWidth < 768;
+
+          if (idx === 2 && isMobile && activeTimelineCardRef.current > 0) {
+            setActiveTimelineCard(prev => prev - 1);
+          } else {
+            goToSlide(idx - 1, -1);
           }
         },
         onUp: () => {
-          if (!animatingRef.current && !isModalOpen) {
-            goToSlide(currentIndexRef.current + 1, 1);
+          if (animatingRef.current || isModalOpen) return;
+          
+          const idx = currentIndexRef.current;
+          const isMobile = window.innerWidth < 768;
+
+          if (idx === 2 && isMobile && activeTimelineCardRef.current < 2) {
+            setActiveTimelineCard(prev => prev + 1);
+          } else {
+            goToSlide(idx + 1, 1);
           }
         },
         tolerance: 15,
@@ -302,7 +335,11 @@ export default function Home() {
         <div className="swipe-section" id="slide-2">
           <div className="outer">
             <div className="inner">
-              <Timeline isActive={activeSlide === 2} />
+              <Timeline 
+                isActive={activeSlide === 2} 
+                activeCard={activeTimelineCard}
+                onChangeCard={setActiveTimelineCard}
+              />
             </div>
           </div>
         </div>
