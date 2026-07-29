@@ -198,17 +198,37 @@ export default function Home() {
         wheelSpeed: -1,
         axis: "y",
         onDown: () => {
-          if (!animatingRef.current && !isModalOpen) {
-            goToSlide(currentIndexRef.current - 1, -1);
+          if (animatingRef.current || isModalOpen) return;
+
+          // Check if the current section has scrollable overflow
+          const activeSection = document.querySelector(".swipe-section.active-slide .section-card");
+          if (activeSection) {
+            const scrollTop = activeSection.scrollTop;
+            if (scrollTop > 5) {
+              // Not at the top of the container yet, let native scroll handle it
+              return;
+            }
           }
+
+          goToSlide(currentIndexRef.current - 1, -1);
         },
         onUp: () => {
-          if (!animatingRef.current && !isModalOpen) {
-            goToSlide(currentIndexRef.current + 1, 1);
+          if (animatingRef.current || isModalOpen) return;
+
+          // Check if the current section has scrollable overflow
+          const activeSection = document.querySelector(".swipe-section.active-slide .section-card");
+          if (activeSection) {
+            const { scrollTop, scrollHeight, clientHeight } = activeSection;
+            if (scrollTop + clientHeight < scrollHeight - 5) {
+              // Not at the bottom of the container yet, let native scroll handle it
+              return;
+            }
           }
+
+          goToSlide(currentIndexRef.current + 1, 1);
         },
         tolerance: 15,
-        preventDefault: true,
+        preventDefault: false,
         ignore: "input, textarea, select, button, a",
       } as any);
     };
