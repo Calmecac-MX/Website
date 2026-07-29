@@ -24,6 +24,9 @@
   --border-radius-card: 24px;
   --border-radius-btn: 50px;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --container-width: 1280px;
+  --section-padding-x: clamp(20px, 5vw, 80px);
+  --section-padding-y: clamp(48px, 7vh, 110px);
 
   /* index.css Compatibility Mappings */
   --color-primary: var(--blanco);
@@ -75,7 +78,7 @@ body {
 .section-card {
   background-color: var(--black);
   border-radius: var(--border-radius-card);
-  padding: 110px 40px 80px 40px;
+  padding: var(--section-padding-y) var(--section-padding-x);
   margin-bottom: 0px;
   position: relative;
   overflow: visible;
@@ -109,9 +112,9 @@ body {
 body.swipe-slider-active .section-card {
   height: 100%;
   min-height: 100%;
-  padding-top: 110px;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-top: clamp(60px, 10vh, 110px);
+  padding-left: var(--section-padding-x);
+  padding-right: var(--section-padding-x);
   overflow: hidden;
   border-radius: 0;
 }
@@ -181,7 +184,7 @@ body.swipe-slider-active .callout-section.section-card {
   align-items: center;
   text-align: center;
   min-height: 550px;
-  padding: 80px 40px;
+  padding: clamp(60px, 8vh, 80px) var(--section-padding-x);
 }
 
 .hero-inner {
@@ -465,9 +468,9 @@ body.swipe-slider-active .callout-section.section-card {
 
 .structure-title {
   font-family: var(--font-heading);
-  font-size: 64px;
+  font-size: clamp(1.75rem, 5vw, 4rem);
   font-weight: 700;
-  line-height: 64px;
+  line-height: 1.1;
   color: var(--turquesa);
   max-width: 900px;
   text-align: left;
@@ -476,23 +479,21 @@ body.swipe-slider-active .callout-section.section-card {
 
 .structure-highlight {
   font-family: var(--font-subheading);
-  font-size: 24px;
+  font-size: clamp(1rem, 2vw, 1.5rem);
   font-weight: 700;
   color: var(--blanco);
-  line-height: 32px;
-  margin-bottom: 24px;
-  text-align: left;
-  margin: 20px 0;
+  line-height: 1.45;
+  margin: 16px 0;
 }
 
 .structure-description {
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
   color: var(--blanco);
-  line-height: 20px;
+  line-height: 1.65;
   font-weight: 500;
   text-align: left;
-  margin: 20px 0;
+  margin: 16px 0;
 }
 
 .structure-forma {
@@ -516,7 +517,7 @@ body.swipe-slider-active .callout-section.section-card {
   justify-content: center;
   overflow: hidden;
   position: relative;
-  padding: 60px 80px;
+  padding: clamp(40px, 6vh, 60px) var(--section-padding-x);
 }
 
 .callout-grid {
@@ -590,9 +591,9 @@ body.swipe-slider-active .callout-section.section-card {
 
 .callout-text {
   font-family: var(--font-subheading);
-  font-size: 20px;
+  font-size: clamp(0.9rem, 1.8vw, 1.25rem);
   font-weight: 500;
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--blanco);
 }
 
@@ -774,7 +775,7 @@ body.swipe-slider-active .plan-section {
 
 .plan-main-title {
   font-family: var(--font-heading);
-  font-size: 110px;
+  font-size: clamp(2.5rem, 8vw, 6.875rem);
   font-weight: 900;
   color: var(--turquesa);
   margin-bottom: 8px;
@@ -783,9 +784,9 @@ body.swipe-slider-active .plan-section {
 
 .plan-subtitle {
   font-family: var(--font-subheading);
-  font-size: 22px;
+  font-size: clamp(1rem, 2vw, 1.375rem);
   font-weight: 500;
-  line-height: 28px;
+  line-height: 1.4;
   color: var(--turquesa);
 }
 
@@ -954,7 +955,7 @@ body.swipe-slider-active .plan-section {
 
 .provocation-title {
   font-family: var(--font-heading);
-  font-size: 4.5rem;
+  font-size: clamp(1.75rem, 5vw, 4.5rem);
   font-weight: 900;
   line-height: 1.1;
   color: var(--blanco);
@@ -972,8 +973,8 @@ body.swipe-slider-active .plan-section {
 
 .provocation-text {
   font-family: var(--font-body);
-  font-size: 24px;
-  line-height: 32px;
+  font-size: clamp(0.95rem, 2vw, 1.5rem);
+  line-height: 1.65;
   font-weight: 400;
   color: var(--blanco);
   text-align: center;
@@ -1146,7 +1147,7 @@ body.swipe-slider-active .plan-section {
 
 .footer-quote-text {
   font-family: var(--font-heading);
-  font-size: 4rem;
+  font-size: clamp(1.75rem, 5vw, 4rem);
   font-weight: 900;
   line-height: 1.1;
   text-align: center;
@@ -1254,7 +1255,8 @@ body.swipe-slider-active .plan-section {
 }
 
 @media (max-width: 768px) {
-  .structure-title, .plan-main-title, .provocation-title, .register-title, .error-404-title {
+  /* register and error pages still use fixed sizes */
+  .register-title, .error-404-title {
     font-size: 2.4rem;
   }
 
@@ -1264,10 +1266,6 @@ body.swipe-slider-active .plan-section {
 
   .provocation-btn, .register-btn, .error-404-btn {
     min-width: 100%;
-  }
-
-  .footer-quote-text {
-    font-size: 2.2rem;
   }
 }
 
@@ -1301,7 +1299,7 @@ body.swipe-slider-active .plan-section {
 
 .contact-headline {
     font-family: var(--font-heading);
-    font-size: 3.8rem;
+    font-size: clamp(1.75rem, 4vw, 3.8rem);
     font-weight: 900;
     line-height: 1.1;
     color: var(--blanco);
@@ -1317,7 +1315,7 @@ body.swipe-slider-active .plan-section {
 
 .contact-subhead {
     font-family: var(--font-subheading);
-    font-size: 1.65rem;
+    font-size: clamp(1rem, 2vw, 1.65rem);
     font-weight: 500;
     line-height: 1.45;
     color: var(--blanco);
@@ -2018,16 +2016,10 @@ html {
   .plan-section {
     align-items: center;
     justify-content: center;
-    padding: 60px 24px;
+    padding: clamp(40px, 6vh, 60px) clamp(16px, 4vw, 24px);
   }
   .plan-header {
     text-align: center;
-  }
-  .plan-main-title {
-    font-size: 4rem;
-  }
-  .plan-subtitle {
-    font-size: 1.25rem;
   }
   .staircase-container {
     grid-template-columns: 1fr;
@@ -2045,41 +2037,37 @@ html {
   }
 
   .callout-section {
-    padding: 60px 24px;
+    padding: clamp(32px, 5vh, 60px) clamp(16px, 4vw, 24px);
   }
   .callout-grid {
     grid-template-columns: 1fr;
     gap: 30px;
+  }
+  .callout-inner {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
   .image-frame {
     height: 360px;
   }
 
   .provocation-section {
-    padding: 60px 24px;
-  }
-  .provocation-title {
-    font-size: 2.8rem;
-    line-height: 1.1;
-  }
-  .provocation-text {
-    font-size: 18px;
-    line-height: 26px;
+    padding: clamp(32px, 5vh, 60px) clamp(16px, 4vw, 24px);
   }
   .provocation-btn {
     min-width: 100%;
   }
 
   .contact-section-wrapper {
-    padding: 60px 24px;
+    padding: clamp(32px, 5vh, 60px) clamp(16px, 4vw, 24px);
   }
   .contact-headline {
-    font-size: 2.8rem;
-    line-height: 1.1;
     text-align: center;
   }
   .contact-subhead {
-    font-size: 1.2rem;
     text-align: center;
   }
   .form-card {
@@ -2092,47 +2080,12 @@ html {
   }
 
   .footer-quote-section {
-    padding: 60px 24px;
-  }
-  .footer-quote-text {
-    font-size: 2.8rem;
-    line-height: 1.1;
+    padding: clamp(32px, 5vh, 60px) clamp(16px, 4vw, 24px);
   }
 }
 
 @media (max-width: 576px) {
-  .hero-title {
-    font-size: 2rem;
-  }
-  .hero-title-highlight {
-    font-size: 2rem;
-  }
-  .hero-subtitle {
-    font-size: 1.1rem;
-  }
-  .hero-description {
-    font-size: 15px;
-    line-height: 24px;
-  }
-  .structure-title {
-    font-size: 2rem;
-    line-height: 1.1;
-  }
-  .plan-main-title {
-    font-size: 2.4rem;
-  }
-  .provocation-title {
-    font-size: 2rem;
-  }
-  .contact-headline {
-    font-size: 2rem;
-  }
-  .contact-subhead {
-    font-size: 1.1rem;
-  }
-  .footer-quote-text {
-    font-size: 2rem;
-  }
+  /* hero handled by clamp at base level */
   .form-card {
     padding: 24px 14px;
   }
@@ -2146,11 +2099,7 @@ html {
     max-width: 110px;
   }
   .allies-main-title {
-    font-size: 1.75rem !important;
     line-height: 1.15;
-  }
-  .allies-subtitle {
-    font-size: 0.95rem !important;
   }
   .btn {
     font-size: 13px;
@@ -2158,28 +2107,8 @@ html {
   }
 }
 
-/* Extra-small phones (≤ 480px) */
+/* Extra-small phones (≤ 480px) — typography handled by clamp() */
 @media (max-width: 480px) {
-  .section-card {
-    padding: 80px 16px 60px 16px;
-  }
-  .hero-section {
-    padding: 80px 16px 60px 16px;
-  }
-  .hero-title {
-    font-size: 1.8rem;
-    line-height: 1.15;
-  }
-  .hero-title-highlight {
-    font-size: 1.8rem;
-  }
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-  .hero-description {
-    font-size: 14px;
-    line-height: 22px;
-  }
   .hero-buttons {
     gap: 12px;
     margin-top: 16px;
@@ -2196,34 +2125,6 @@ html {
   }
   .logo-tiendanube {
     max-width: 95px;
-  }
-  .structure-title {
-    font-size: 1.75rem;
-  }
-  .plan-main-title {
-    font-size: 2rem;
-  }
-  .plan-subtitle {
-    font-size: 0.9rem;
-  }
-  .provocation-title {
-    font-size: 1.75rem;
-  }
-  .provocation-text {
-    font-size: 15px;
-    line-height: 22px;
-  }
-  .contact-headline {
-    font-size: 1.75rem;
-  }
-  .contact-subhead {
-    font-size: 1rem;
-  }
-  .footer-quote-text {
-    font-size: 1.75rem;
-  }
-  .allies-main-title {
-    font-size: 1.5rem !important;
   }
   .btn {
     font-size: 12px;
