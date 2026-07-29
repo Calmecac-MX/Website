@@ -400,6 +400,7 @@ body.swipe-slider-active .callout-section.section-card {
   justify-content: center;
   align-items: center;
   text-align: center;
+  overflow: hidden;
 }
 
 .structure-background {
@@ -421,11 +422,15 @@ body.swipe-slider-active .callout-section.section-card {
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .structure.piramide {
-  width: 1565px;
-  height: 1000px;
+  width: min(1565px, 100vw);
+  height: auto;
+  max-height: 80vh;
   aspect-ratio: 144/91;
   object-fit: contain;
   transform: translate3d(var(--piramide-tx, 0px), var(--piramide-ty, 0px), 30px) rotateX(var(--piramide-rx, 0deg)) rotateY(var(--piramide-ry, 0deg));
@@ -442,6 +447,8 @@ body.swipe-slider-active .callout-section.section-card {
   width: 100%;
   position: relative;
   z-index: 2;
+  align-items: center;
+  justify-items: center;
 }
 
 .structure-text-col {
@@ -449,6 +456,7 @@ body.swipe-slider-active .callout-section.section-card {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  text-align: left;
 }
 
 .structure-title {
@@ -1169,12 +1177,29 @@ body.swipe-slider-active .plan-section {
 @media (max-width: 992px) {
   .grid-two-columns {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 24px;
+    justify-items: center;
+    align-items: center;
+    height: auto;
   }
   
   .structure-text-col {
     text-align: center;
     align-items: center;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .structure-title {
+    text-align: center;
+  }
+  
+  .structure-highlight {
+    text-align: center;
+  }
+  
+  .structure-description {
+    text-align: center;
   }
   
   .staircase-container {
@@ -2262,6 +2287,36 @@ html {
     font-size: 14px;
     line-height: 18px;
     margin: 10px 0;
+  }
+
+  /* Structure section: keep everything within 100vh, centered */
+  body.swipe-slider-active .structure-section {
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+  }
+  body.swipe-slider-active .grid-two-columns {
+    height: auto;
+    max-height: calc(100vh - 140px);
+    align-items: center;
+    justify-items: center;
+    gap: 40px;
+    padding: 0 16px;
+  }
+  body.swipe-slider-active .structure-text-col {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 650px;
+  }
+  body.swipe-slider-active .structure-title,
+  body.swipe-slider-active .structure-highlight,
+  body.swipe-slider-active .structure-description {
+    text-align: center;
+  }
+  body.swipe-slider-active .structure.piramide {
+    max-height: 60vh;
+    width: min(1565px, 90vw);
   }
 
   body.swipe-slider-active .plan-main-title {
