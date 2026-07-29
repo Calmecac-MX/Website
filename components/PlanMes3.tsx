@@ -127,8 +127,8 @@ export default function PlanMes3({ isActive = false }: PlanMes3Props) {
       ease: "power2.out",
     });
 
-    const cards = gsap.utils.toArray(containerRef.current?.querySelectorAll(".session-card-plan") || ".session-card-plan");
-    cards.forEach((card: Element, idx: number) => {
+    const cards = gsap.utils.toArray<Element>(containerRef.current?.querySelectorAll(".session-card-plan") || ".session-card-plan");
+    cards.forEach((card, idx: number) => {
       if (idx === activeMobileIndex) {
         gsap.to(card, {
           scale: 1,
