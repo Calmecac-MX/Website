@@ -56,8 +56,10 @@ export default function QueHacemosClient() {
     const tl = gsap.timeline({
       defaults: { duration: 1.25, ease: "power2.inOut" },
       onComplete: () => {
-        if (prevSlide) {
+        if (prevSlide && prevOuter && prevInner) {
           prevSlide.classList.remove("active-slide", "animating-slide");
+          gsap.set(prevOuter, { yPercent: dir * -100 });
+          gsap.set(prevInner, { yPercent: dir * 100, opacity: 1, scale: 1 });
         }
         nextSlide.classList.add("active-slide");
         nextSlide.classList.remove("animating-slide");
@@ -70,7 +72,7 @@ export default function QueHacemosClient() {
     nextSlide.classList.add("animating-slide");
     if (nextOuter && nextInner) {
       gsap.set(nextOuter, { yPercent: dir * 100 });
-      gsap.set(nextInner, { yPercent: dir * -100 });
+      gsap.set(nextInner, { yPercent: dir * -100, opacity: 0, scale: 0.95 });
     }
     if (nextBg) {
       gsap.set(nextBg, { yPercent: dir * 15 });
@@ -79,12 +81,12 @@ export default function QueHacemosClient() {
     if (prevSlide && prevOuter && prevInner) {
       prevSlide.classList.add("animating-slide");
       tl.to(prevOuter, { yPercent: dir * -100 }, 0)
-        .to(prevInner, { yPercent: dir * 100 }, 0);
+        .to(prevInner, { yPercent: dir * 100, opacity: 0, scale: 1.05 }, 0);
     }
 
     if (nextOuter && nextInner) {
       tl.to(nextOuter, { yPercent: 0 }, 0)
-        .to(nextInner, { yPercent: 0 }, 0);
+        .to(nextInner, { yPercent: 0, opacity: 1, scale: 1 }, 0);
     }
 
     if (nextBg) {
