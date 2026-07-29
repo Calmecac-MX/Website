@@ -11,6 +11,9 @@ interface PlanMes2Props {
 export default function PlanMes2({ isActive = false }: PlanMes2Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
+  const touchStartRef = useRef({ x: 0, y: 0 });
 
   const sessions = [
     {
@@ -18,7 +21,7 @@ export default function PlanMes2({ isActive = false }: PlanMes2Props) {
       title: "Escalado de Campañas en Meta Ads (Estrategias de Growth)",
       shortDesc: "Implementa frameworks de pruebas creativas y optimización Advantage+ para escalar presupuestos.",
       temario: [
-        "Estructura de campañas para escalado horizontal vs. vertical.",
+        "Estructura de campaigns para escalado horizontal vs. vertical.",
         "Campañas de compras Advantage+ (ASC) y cuándo implementarlas.",
         "Framework de pruebas creativas (Creative Testing)."
       ],
@@ -31,7 +34,7 @@ export default function PlanMes2({ isActive = false }: PlanMes2Props) {
     {
       number: 6,
       title: "Google Ads para E-Commerce",
-      shortDesc: "Optimiza Google Merchant Center y configura campañas avanzadas de Performance Max.",
+      shortDesc: "Optimiza Google Merchant Center y configura campaigns avanzadas de Performance Max.",
       temario: [
         "Configuración avanzada de Google Merchant Center y optimización del Feed de productos.",
         "Campañas de Performance Max (PMax).",
@@ -48,33 +51,44 @@ export default function PlanMes2({ isActive = false }: PlanMes2Props) {
       title: "Retargeting Avanzado Dinámico y Modelos de Atribución",
       shortDesc: "Configura persecución inteligente de catálogos y evalúa la atribución real multi-canal.",
       temario: [
-        "Retargeting basado en catálogo digital.",
-        "Modelos de atribución (First Click, Last Click, Data-Driven).",
-        "Exclusión de audiencias de compradores recientes."
+        "Estructura de retargeting de catálogo dinámico (DABA vs. DPA).",
+        "Atribución publicitaria multi-canal y modelado de datos.",
+        "Campañas de retención anticipada para leads fríos."
       ],
       objetivos: [
-        "Comprende la relevancia del retargeting y los modelos de atribución para el journey del consumidor."
+        "Diferenciar y estructurar audiencias frías y calientes para su correcto retargeting."
       ],
-      herramientas: ["Catálogos de Meta", "Catálogos de TikTok", "Google Analytics 4", "PostHog"],
-      aprendizajes: "El emprendedor desarrollará la capacidad de estructurar sistemas publicitarios omnicanal de persecución inteligente. Aprenderá a configurar campañas dinámicas basadas en el catálogo de productos adaptadas a la navegación del usuario, y adquirirá el criterio analítico para interpretar los modelos de atribución basados en datos (Data-Driven), permitiéndole entender qué canal realmente genera sus ventas y optimizar las exclusiones de audiencia para no desperdiciar presupuesto."
+      herramientas: ["Klaviyo", "Meta Custom Audiences", "Google Analytics 4"],
+      aprendizajes: "El emprendedor comprenderá cómo conectar sus esfuerzos orgánicos y pagados mediante atribución precisa. Aprenderá a estructurar campañas de retargeting dinámico personalizadas por comportamiento del usuario y a evaluar la atribución de conversiones en Google Analytics 4 para balancear con precisión la inversión publicitaria en su embudo de ventas."
     },
     {
       number: 8,
-      title: "Marketing de Influencers Basado en Performance (UGC y Afiliados)",
-      shortDesc: "Negocia briefs con creadores bajo esquemas de adquisición y recluta embajadores de marca.",
+      title: "TikTok Ads y Nuevos Canales de Tráfico",
+      shortDesc: "Domina el formato nativo Spark Ads y diversifica tu pauta en plataformas emergentes.",
       temario: [
-        "Negociación con creadores bajo esquemas de comisión o costo por adquisición.",
-        "Relevancia del contenido UGC (Contenido Generado por el Usuario).",
-        "Creación y gestión de un programa de embajadores de marca."
+        "El ecosistema de anuncios en TikTok Ads: Spark Ads y catálogos nativos.",
+        "El framework creativo de video de alta retención para e-commerce.",
+        "Diversificación de pauta y planeación presupuestaria multicanal."
       ],
       objetivos: [
-        "Comprende la relevancia del performance marketing como canal de adquisición de usuarios."
+        "Configurar una campaña en TikTok Ads y estructurar un set-up de video nativo optimizado para pauta."
       ],
-      herramientas: ["Códigos de Rastreo", "Afiliados Tiendanube", "UGC Networks"],
-      aprendizajes: "El emprendedor aprenderá a transicionar del marketing de influencers tradicional (enfocado en métricas de vanidad) a una estrategia basada al 100% en rendimiento (Performance). Desarrollará habilidades para negociar briefs comerciales bajo modelos de costo por adquisición (CPA) o comisiones, y estructurará un sistema automatizado de reclutamiento de creadores de contenido UGC (Contenido Generado por el Usuario) y embajadores de marca enfocado en el retorno de inversión."
+      herramientas: ["TikTok Ads Manager", "Spark Ads", "CapCut / Video Suite"],
+      aprendizajes: "El emprendedor dominará el lenguaje visual y la configuración técnica del tráfico móvil moderno. Aprenderá a estructurar anuncios nativos Spark Ads que no parezcan publicidad y a optimizar la retención de video creativo en los primeros 3 segundos, integrando TikTok Ads como canal complementario clave para la adquisición diversificada de clientes."
     }
   ];
 
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // GSAP slider entry transitions
   useEffect(() => {
     if (!isActive) return;
 
@@ -87,16 +101,101 @@ export default function PlanMes2({ isActive = false }: PlanMes2Props) {
         { y: 0, opacity: 1, rotateX: 0, duration: 0.9, stagger: 0.15 }
       );
 
-      tl.fromTo(
-        ".session-card-plan",
-        { y: 40, opacity: 0, scale: 0.97 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: "power4.out" },
-        "-=0.4"
-      );
+      if (!isMobile) {
+        tl.fromTo(
+          ".session-card-plan",
+          { y: 40, opacity: 0, scale: 0.97 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: "power4.out" },
+          "-=0.4"
+        );
+      } else {
+        tl.fromTo(
+          ".allies-grid-container",
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isActive]);
+  }, [isActive, isMobile]);
+
+  // Mobile horizontal sliding effect
+  useEffect(() => {
+    if (!isMobile) {
+      gsap.killTweensOf(".plan-section .allies-grid-container");
+      gsap.killTweensOf(".plan-section .session-card-plan");
+      gsap.set(".plan-section .allies-grid-container", { clearProps: "x,transform" });
+      gsap.set(".plan-section .session-card-plan", { clearProps: "scale,opacity" });
+      return;
+    }
+
+    const cardWidth = 280; // matches css
+    const gap = 20; // matches css
+    const parentWidth = containerRef.current?.offsetWidth || window.innerWidth;
+    const targetX = (parentWidth - cardWidth) / 2 - activeMobileIndex * (cardWidth + gap);
+
+    gsap.to(containerRef.current?.querySelector(".allies-grid-container") || ".allies-grid-container", {
+      x: targetX,
+      duration: 0.5,
+      ease: "power2.out",
+    });
+
+    const cards = gsap.utils.toArray(containerRef.current?.querySelectorAll(".session-card-plan") || ".session-card-plan");
+    cards.forEach((card: any, idx: number) => {
+      if (idx === activeMobileIndex) {
+        gsap.to(card, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(card, {
+          scale: 0.88,
+          opacity: 0.35,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      }
+    });
+  }, [isMobile, activeMobileIndex]);
+
+  // Touch handlers for horizontal swipe detection
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = Math.abs(touchStartRef.current.x - currentX);
+    const diffY = Math.abs(touchStartRef.current.y - currentY);
+
+    // Stop propagation if the movement is horizontal
+    if (diffX > diffY && diffX > 10) {
+      e.stopPropagation();
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const diffX = touchStartRef.current.x - endX;
+    const diffY = touchStartRef.current.y - endY;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        setActiveMobileIndex((prev) => Math.min(prev + 1, sessions.length - 1));
+      } else {
+        setActiveMobileIndex((prev) => Math.max(prev - 1, 0));
+      }
+    }
+  };
 
   const activeSessionData = selectedSession !== null ? sessions.find(s => s.number === selectedSession) : null;
 
@@ -120,12 +219,33 @@ export default function PlanMes2({ isActive = false }: PlanMes2Props) {
         </p>
       </div>
 
-      <div className="allies-grid-container grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[1100px] mx-auto w-full" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px", margin: "0 auto" }}>
+      <div 
+        className="allies-grid-container" 
+        style={isMobile ? {
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          gap: "20px",
+          margin: "0 auto",
+        } : {
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: "20px",
+          margin: "0 auto",
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {sessions.map((session) => (
           <div
             key={session.number}
             className="session-card-plan stair-card stair-2 opacity-0"
-            style={{ height: "auto", alignSelf: "stretch" }}
+            style={{ 
+                height: "auto", 
+                alignSelf: "stretch", 
+                flex: isMobile ? "0 0 280px" : "none" 
+            }}
           >
             <div
               className="stair-desc cursor-pointer hover:translate-y-[-4px]"
@@ -167,6 +287,24 @@ export default function PlanMes2({ isActive = false }: PlanMes2Props) {
           </div>
         ))}
       </div>
+
+      {/* Pagination dots for mobile */}
+      {isMobile && (
+        <div className="mobile-dots-container flex justify-center mt-6 gap-2">
+          {sessions.map((_, idx) => (
+            <button
+              key={idx}
+              className={`mobile-dot w-2 h-2 rounded-full transition-all`}
+              onClick={() => setActiveMobileIndex(idx)}
+              style={{
+                backgroundColor: activeMobileIndex === idx ? "#ffdc7a" : "rgba(255, 255, 255, 0.25)",
+                boxShadow: activeMobileIndex === idx ? "0 0 8px #ffdc7a" : "none",
+              }}
+              aria-label={`Sesión ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {activeSessionData && (
         <SessionDetailModal

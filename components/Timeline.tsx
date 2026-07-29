@@ -176,6 +176,18 @@ export default function Timeline({ isActive = false }: TimelineProps) {
     };
   };
 
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = Math.abs(touchStartRef.current.x - currentX);
+    const diffY = Math.abs(touchStartRef.current.y - currentY);
+
+    // Stop propagation if the movement is horizontal
+    if (diffX > diffY && diffX > 10) {
+      e.stopPropagation();
+    }
+  };
+
   const handleTouchEnd = (e: React.TouchEvent) => {
     const endX = e.changedTouches[0].clientX;
     const endY = e.changedTouches[0].clientY;
@@ -207,6 +219,7 @@ export default function Timeline({ isActive = false }: TimelineProps) {
         className="staircase-container" 
         ref={staircaseRef}
         onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         {/* Module 1 */}

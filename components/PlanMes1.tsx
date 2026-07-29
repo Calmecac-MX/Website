@@ -11,6 +11,9 @@ interface PlanMes1Props {
 export default function PlanMes1({ isActive = false }: PlanMes1Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
+  const touchStartRef = useRef({ x: 0, y: 0 });
 
   const sessions = [
     {
@@ -33,7 +36,7 @@ export default function PlanMes1({ isActive = false }: PlanMes1Props) {
       title: "Arquitectura de Datos: Píxeles, APIs y Medición Correcta",
       shortDesc: "Estructura la medición de datos Server-Side ante el fin de las cookies de terceros.",
       temario: [
-        "Cookies de terceros y su impacto en la estrategia digital.",
+        "Cookies de terceros and su impacto en la estrategia digital.",
         "Configuración de API de Conversiones vs. Píxel Tradicional.",
         "Eventos personalizados de valor (Add-to-cart, Initiate Checkout, Purchase) y su correcta atribución."
       ],
@@ -75,6 +78,17 @@ export default function PlanMes1({ isActive = false }: PlanMes1Props) {
     }
   ];
 
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // GSAP slider entry transitions
   useEffect(() => {
     if (!isActive) return;
 
@@ -87,16 +101,101 @@ export default function PlanMes1({ isActive = false }: PlanMes1Props) {
         { y: 0, opacity: 1, rotateX: 0, duration: 0.9, stagger: 0.15 }
       );
 
-      tl.fromTo(
-        ".session-card-plan",
-        { y: 40, opacity: 0, scale: 0.97 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: "power4.out" },
-        "-=0.4"
-      );
+      if (!isMobile) {
+        tl.fromTo(
+          ".session-card-plan",
+          { y: 40, opacity: 0, scale: 0.97 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: "power4.out" },
+          "-=0.4"
+        );
+      } else {
+        tl.fromTo(
+          ".allies-grid-container",
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" },
+          "-=0.4"
+        );
+      }
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isActive]);
+  }, [isActive, isMobile]);
+
+  // Mobile horizontal sliding effect
+  useEffect(() => {
+    if (!isMobile) {
+      gsap.killTweensOf(".plan-section .allies-grid-container");
+      gsap.killTweensOf(".plan-section .session-card-plan");
+      gsap.set(".plan-section .allies-grid-container", { clearProps: "x,transform" });
+      gsap.set(".plan-section .session-card-plan", { clearProps: "scale,opacity" });
+      return;
+    }
+
+    const cardWidth = 280; // matches css
+    const gap = 20; // matches css
+    const parentWidth = containerRef.current?.offsetWidth || window.innerWidth;
+    const targetX = (parentWidth - cardWidth) / 2 - activeMobileIndex * (cardWidth + gap);
+
+    gsap.to(containerRef.current?.querySelector(".allies-grid-container") || ".allies-grid-container", {
+      x: targetX,
+      duration: 0.5,
+      ease: "power2.out",
+    });
+
+    const cards = gsap.utils.toArray(containerRef.current?.querySelectorAll(".session-card-plan") || ".session-card-plan");
+    cards.forEach((card: any, idx: number) => {
+      if (idx === activeMobileIndex) {
+        gsap.to(card, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(card, {
+          scale: 0.88,
+          opacity: 0.35,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      }
+    });
+  }, [isMobile, activeMobileIndex]);
+
+  // Touch handlers for horizontal swipe detection
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = Math.abs(touchStartRef.current.x - currentX);
+    const diffY = Math.abs(touchStartRef.current.y - currentY);
+
+    // Stop propagation if the movement is horizontal
+    if (diffX > diffY && diffX > 10) {
+      e.stopPropagation();
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const diffX = touchStartRef.current.x - endX;
+    const diffY = touchStartRef.current.y - endY;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        setActiveMobileIndex((prev) => Math.min(prev + 1, sessions.length - 1));
+      } else {
+        setActiveMobileIndex((prev) => Math.max(prev - 1, 0));
+      }
+    }
+  };
 
   const activeSessionData = selectedSession !== null ? sessions.find(s => s.number === selectedSession) : null;
 
@@ -120,7 +219,24 @@ export default function PlanMes1({ isActive = false }: PlanMes1Props) {
         </p>
       </div>
 
-      <div className="allies-grid-container grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[1100px] mx-auto w-full" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px", margin: "0 auto" }}>
+      <div 
+        className="allies-grid-container" 
+        style={isMobile ? {
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          gap: "20px",
+          margin: "0 auto",
+        } : {
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: "20px",
+          margin: "0 auto",
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {sessions.map((session) => (
           <div
             key={session.number}
@@ -167,6 +283,24 @@ export default function PlanMes1({ isActive = false }: PlanMes1Props) {
           </div>
         ))}
       </div>
+
+      {/* Pagination dots for mobile */}
+      {isMobile && (
+        <div className="mobile-dots-container">
+          {sessions.map((_, idx) => (
+            <button
+              key={idx}
+              className={`mobile-dot ${activeMobileIndex === idx ? "active" : ""}`}
+              onClick={() => setActiveMobileIndex(idx)}
+              style={{
+                backgroundColor: activeMobileIndex === idx ? "#2ECDB7" : "rgba(255, 255, 255, 0.25)",
+                boxShadow: activeMobileIndex === idx ? "0 0 8px #2ECDB7" : "none",
+              }}
+              aria-label={`Sesión ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {activeSessionData && (
         <SessionDetailModal
