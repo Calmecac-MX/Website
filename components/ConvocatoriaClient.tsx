@@ -68,8 +68,10 @@ export default function ConvocatoriaClient() {
     });
 
     nextSlide.classList.add("animating-slide");
-    gsap.set(nextOuter, { yPercent: dir * 100 });
-    gsap.set(nextInner, { yPercent: dir * -100 });
+    if (nextOuter && nextInner) {
+      gsap.set(nextOuter, { yPercent: dir * 100 });
+      gsap.set(nextInner, { yPercent: dir * -100 });
+    }
     if (nextBg) {
       gsap.set(nextBg, { yPercent: dir * 15 });
     }
@@ -80,8 +82,10 @@ export default function ConvocatoriaClient() {
         .to(prevInner, { yPercent: dir * 100 }, 0);
     }
 
-    tl.to(nextOuter, { yPercent: 0 }, 0)
-      .to(nextInner, { yPercent: 0 }, 0);
+    if (nextOuter && nextInner) {
+      tl.to(nextOuter, { yPercent: 0 }, 0)
+        .to(nextInner, { yPercent: 0 }, 0);
+    }
 
     if (nextBg) {
       tl.to(nextBg, { yPercent: 0 }, 0);
@@ -110,14 +114,16 @@ export default function ConvocatoriaClient() {
         if (slide) {
           const outer = slide.querySelector(".outer");
           const inner = slide.querySelector(".inner");
-          if (i === currentIndexRef.current) {
-            slide.classList.add("active-slide");
-            gsap.set(outer, { yPercent: 0 });
-            gsap.set(inner, { yPercent: 0 });
-          } else {
-            slide.classList.remove("active-slide", "animating-slide");
-            gsap.set(outer, { yPercent: 100 });
-            gsap.set(inner, { yPercent: -100 });
+          if (outer && inner) {
+            if (i === currentIndexRef.current) {
+              slide.classList.add("active-slide");
+              gsap.set(outer, { yPercent: 0 });
+              gsap.set(inner, { yPercent: 0 });
+            } else {
+              slide.classList.remove("active-slide", "animating-slide");
+              gsap.set(outer, { yPercent: 100 });
+              gsap.set(inner, { yPercent: -100 });
+            }
           }
         }
       }

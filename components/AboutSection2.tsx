@@ -217,7 +217,6 @@ export default function AboutSection2({ isActive = false, onNavigate }: AboutSec
             fill
             sizes="(max-width: 900px) 100vw, 50vw"
             className="callout-image"
-            priority
           />
           <div className="accent-dot accent-dot-1" aria-hidden="true" />
           <div className="accent-dot accent-dot-2" aria-hidden="true" />

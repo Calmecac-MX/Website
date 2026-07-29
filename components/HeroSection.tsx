@@ -131,8 +131,8 @@ export default function HeroSection({ onComfortClick, onNavigate }: HeroSectionP
 
   return (
     <>
-      <section id="hero" className="section-card hero-section relative" data-animate-svg>
-        <div className="hero-inner" ref={containerRef}>
+      <section id="hero" ref={containerRef} className="section-card hero-section relative" data-animate-svg>
+        <div className="hero-inner">
           <h1 className="hero-title overflow-hidden flex flex-wrap justify-center gap-x-4">
             <span className="inline-block hero-title-word text-nowrap">
               {splitText("NO", "#2ECDB7", "rgba(46, 205, 183, 0.6)")}

@@ -9,6 +9,9 @@ gsap.registerPlugin(DrawSVGPlugin);
 export default function BackgroundSvgAnimator() {
   useEffect(() => {
     const svgs = gsap.utils.toArray<SVGGElement>(".bg-svg");
+    const activeTweens: gsap.core.Tween[] = [];
+    const activeListeners: { fn: () => void }[] = [];
+
     svgs.forEach((el) => {
       const duration = parseFloat(el.getAttribute("data-anim-duration") || "2");
       const tween = gsap.fromTo(
@@ -16,6 +19,8 @@ export default function BackgroundSvgAnimator() {
         { drawSVG: "0%" },
         { drawSVG: "100%", repeat: -1, yoyo: true, ease: "power1.inOut", duration }
       );
+      activeTweens.push(tween);
+
       // pause when page hidden
       const handleVisibility = () => {
         if (document.hidden) {
@@ -25,11 +30,17 @@ export default function BackgroundSvgAnimator() {
         }
       };
       document.addEventListener("visibilitychange", handleVisibility);
-      return () => {
-        document.removeEventListener("visibilitychange", handleVisibility);
-        tween.kill();
-      };
+      activeListeners.push({ fn: handleVisibility });
     });
+
+    return () => {
+      activeListeners.forEach((listener) => {
+        document.removeEventListener("visibilitychange", listener.fn);
+      });
+      activeTweens.forEach((tween) => {
+        tween.kill();
+      });
+    };
   }, []);
 
   return null;
