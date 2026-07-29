@@ -175,6 +175,9 @@ export default function Home() {
     let observerInstance: Observer | null = null;
     let isSliderActive = false;
 
+    // Touch tracking for mobile swipe
+    let touchStartY = 0;
+
     const setupSlider = () => {
       if (isSliderActive) return; // already active
       isSliderActive = true;
@@ -203,49 +206,62 @@ export default function Home() {
         }
       }
 
-      // Register GSAP Observer Plugin
+      // Register GSAP Observer Plugin — wheel only (desktop)
       gsap.registerPlugin(Observer);
       observerInstance = Observer.create({
-        type: "wheel,touch",
+        type: "wheel",
         wheelSpeed: -1,
         onDown: () => {
           if (animatingRef.current || isModalOpen) return;
-
-          // Check if the current section has scrollable overflow
-          const activeSection = document.querySelector(".swipe-section.active-slide .section-card");
-          if (activeSection) {
-            const scrollTop = activeSection.scrollTop;
-            if (scrollTop > 5) {
-              // Not at the top of the container yet, let native scroll handle it
-              return;
-            }
-          }
-
           goToSlide(currentIndexRef.current - 1, -1);
         },
         onUp: () => {
           if (animatingRef.current || isModalOpen) return;
-
-          // Check if the current section has scrollable overflow
-          const activeSection = document.querySelector(".swipe-section.active-slide .section-card");
-          if (activeSection) {
-            const { scrollTop, scrollHeight, clientHeight } = activeSection;
-            if (scrollTop + clientHeight < scrollHeight - 5) {
-              // Not at the bottom of the container yet, let native scroll handle it
-              return;
-            }
-          }
-
           goToSlide(currentIndexRef.current + 1, 1);
         },
         tolerance: 10,
-        preventDefault: false,
+        preventDefault: true,
         ignore: "input, textarea, select, button, a",
       });
     };
 
+    // ── Mobile touch handling (passive-friendly) ──────────────────────────────
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (animatingRef.current || isModalOpen) return;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaY = touchStartY - touchEndY; // positive = swipe up (go next), negative = swipe down (go prev)
+      const threshold = 50; // px minimum swipe
+
+      if (Math.abs(deltaY) < threshold) return; // too small, ignore
+
+      const activeSection = document.querySelector<HTMLElement>(".swipe-section.active-slide .section-card");
+
+      if (deltaY > 0) {
+        // Swiped up → go to next slide (only if card is at bottom)
+        if (activeSection) {
+          const { scrollTop, scrollHeight, clientHeight } = activeSection;
+          if (scrollTop + clientHeight < scrollHeight - 5) return; // card can still scroll down
+        }
+        goToSlide(currentIndexRef.current + 1, 1);
+      } else {
+        // Swiped down → go to previous slide (only if card is at top)
+        if (activeSection) {
+          if (activeSection.scrollTop > 5) return; // card can still scroll up
+        }
+        goToSlide(currentIndexRef.current - 1, -1);
+      }
+    };
+
     // Run setup
     setupSlider();
+
+    // Attach mobile touch listeners (passive — no freeze)
+    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     // Listen to resize
     const handleResize = () => {
@@ -305,6 +321,8 @@ export default function Home() {
       if (observerInstance) {
         observerInstance.kill();
       }
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("click", handleAnchorClick);
