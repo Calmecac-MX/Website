@@ -1,0 +1,15 @@
+# Secretos
+DATABASE_URL=postgresql://postgres:0EZl4uZQIZVAEBqh@db.tjkktinewimgquuvsblf.supabase.co:5432/postgres
+ENCRYPTION_SECRET=Z4ILtL9929hPuQoiLJ4g7YeAGiVdVVYq
+SMTP_PASSWORD=xsmtpsib-c9470a0fe0bef33755b3942f6bd5928f7bbcea6623fa770d25d32d9764ed22dc-MNeGgkqMQAqrkslS
+
+# Publicas
+NEXTAUTH_URL=https://constructor.bot.rifatela.digital
+NEXT_PUBLIC_VIEWER_URL=https://visor.bot.rifatela.digital
+ADMIN_EMAIL=cesar-ayar19@gmail.com
+SMTP_USERNAME=a0c44e001@smtp-brevo.com
+SMTP_HOST=smtp-brevo.com
+SMTP_PORT=587
+NEXT_PUBLIC_SMTP_FROM=no-respondas@rifatela.digital
+SMTP_SECURE=false
+SMTP_AUTH_DISABLED=false

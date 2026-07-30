@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 interface FooterProps {
   onNavigate?: (id: string, slideIdx: number) => void;
@@ -50,6 +51,12 @@ export default function Footer({ onNavigate }: FooterProps) {
             height={40}
             className="logo-tiendanube"
           />
+        </div>
+
+        <div className="footer-legal-link" style={{ marginTop: "28px", fontSize: "13px", letterSpacing: "1px", textTransform: "uppercase" }}>
+          <Link href="/privacidad" className="text-gray-400 hover:text-[var(--menta)] transition-colors duration-200 font-medium">
+            Política de Privacidad
+          </Link>
         </div>
       </div>
     </footer>
