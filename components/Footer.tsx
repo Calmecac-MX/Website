@@ -2,32 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useCurtain } from "./CurtainContext";
 
 interface FooterProps {
   onNavigate?: (id: string, slideIdx: number) => void;
 }
 
 export default function Footer({ onNavigate }: FooterProps) {
+  const { triggerCurtain } = useCurtain();
+
   return (
-    <footer id="footer-quote" className="section-card footer-quote-section">
+    <footer id="footer-quote" className="section-card footer-quote-section bg-transparent border-0 shadow-none">
       <div className="footer-quote-inner">
         <p className="footer-quote-text">
           Aquí no venimos a ver si podemos, sino porque{" "}
           <span className="menta">podemos venimos</span>.
         </p>
         <div className="footer-cta-container" style={{ marginTop: "30px", marginBottom: "40px" }}>
-          <a
-            href="#contacto"
-            className="btn btn-primario"
+          <button
+            className="btn btn-primario cursor-pointer"
             onClick={(e) => {
-              if (onNavigate) {
-                e.preventDefault();
-                onNavigate("contacto", 5);
-              }
+              e.preventDefault();
+              triggerCurtain("/aplica");
             }}
           >
             ACEPTO EL RETO
-          </a>
+          </button>
         </div>
         <div className="hero-logos">
           <Image

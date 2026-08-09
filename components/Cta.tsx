@@ -1,14 +1,20 @@
 "use client";
 
+import { useCurtain } from "./CurtainContext";
+
 interface CtaProps {
   onAccept?: () => void;
 }
 
 export default function Cta({ onAccept }: CtaProps) {
+  const { triggerCurtain } = useCurtain();
+
   const handleAcceptClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     if (onAccept) {
-      e.preventDefault();
       onAccept();
+    } else {
+      triggerCurtain("/aplica");
     }
   };
 

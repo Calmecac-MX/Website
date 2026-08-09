@@ -280,19 +280,27 @@ export default function Timeline({ isActive = false }: TimelineProps) {
           </button>
           
           <div className="mobile-dots-container">
-            {[0, 1, 2].map((idx) => {
-              const colors = ["#2ECDB7", "#ffdc7a", "#ff4ea8"];
+            {[
+              { label: "MÓDULO 1", title: "Infraestructura & Datos", color: "#2ECDB7" },
+              { label: "MÓDULO 2", title: "Adquisición Agresiva", color: "#ffdc7a" },
+              { label: "MÓDULO 3", title: "Retención Extrema", color: "#ff4ea8" },
+            ].map((item, idx) => {
+              const isActive = activeMobileIndex === idx;
               return (
                 <button
                   key={idx}
-                  className={`mobile-dot ${activeMobileIndex === idx ? "active" : ""}`}
+                  className={`mobile-dot ${isActive ? "active" : ""}`}
                   onClick={() => setActiveMobileIndex(idx)}
                   style={{
-                    backgroundColor: activeMobileIndex === idx ? colors[idx] : "rgba(255, 255, 255, 0.25)",
-                    boxShadow: activeMobileIndex === idx ? `0 0 8px ${colors[idx]}` : "none",
+                    backgroundColor: isActive ? item.color : "rgba(255, 255, 255, 0.08)",
+                    color: isActive ? "#050B14" : "rgba(255, 255, 255, 0.8)",
+                    borderColor: isActive ? item.color : "rgba(255, 255, 255, 0.2)",
+                    boxShadow: isActive ? `0 0 10px ${item.color}` : "none",
                   }}
-                  aria-label={`Módulo ${idx + 1}`}
-                />
+                  aria-label={`${item.label}: ${item.title}`}
+                >
+                  <span className="mobile-pill-text">{item.label}</span>
+                </button>
               );
             })}
           </div>

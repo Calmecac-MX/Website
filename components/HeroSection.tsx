@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { useCurtain } from "./CurtainContext";
 
 interface HeroSectionProps {
   onComfortClick?: () => void;
@@ -17,6 +18,7 @@ export default function HeroSection({
 }: HeroSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { triggerCurtain } = useCurtain();
 
   const splitText = (text: string, hoverColor: string = "#2ECDB7", glowColor: string = "rgba(46, 205, 183, 0.6)", hoverY: number = -6) => {
     return text.split("").map((char, index) => {
@@ -66,10 +68,7 @@ export default function HeroSection({
 
   const handleModalAccept = () => {
     setIsModalOpen(false);
-    const contactSection = document.getElementById("contacto");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
-    }
+    triggerCurtain("/aplica");
   };
 
   useEffect(() => {
@@ -182,18 +181,15 @@ export default function HeroSection({
             </p>
           </div>
           <div className="hero-buttons">
-            <a
-              href="#contacto"
-              className="btn btn-primario hero-btn-anim opacity-0"
+            <button
+              className="btn btn-primario hero-btn-anim opacity-0 cursor-pointer"
               onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate("contacto", 5);
-                }
+                e.preventDefault();
+                triggerCurtain("/aplica");
               }}
             >
               ACEPTO EL RETO Y ME LA JUEGO
-            </a>
+            </button>
             <button
               onClick={handleComfortClick}
               className="btn btn-secundario hero-btn-anim opacity-0"

@@ -49,8 +49,11 @@ if (typeof window !== "undefined") {
   });
 }
 
+import { useCurtain } from "./CurtainContext";
+
 export default function Header() {
   const [isStuck, setIsStuck] = useState(false);
+  const { triggerCurtain } = useCurtain();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,7 +84,12 @@ export default function Header() {
         </Link>
 
         <nav className="nav-menu">
-          <a href="#contacto" className="nav-cta-btn">Comenzar</a>
+          <button
+            onClick={() => triggerCurtain("/aplica")}
+            className="nav-cta-btn cursor-pointer bg-transparent border-0 font-inherit"
+          >
+            Comenzar
+          </button>
         </nav>
       </div>
     </header>

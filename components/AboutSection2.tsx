@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { useCurtain } from "./CurtainContext";
 
 interface FloatingShape {
   id: number;
@@ -20,6 +21,7 @@ interface AboutSection2Props {
 export default function AboutSection2({ isActive = false, onNavigate }: AboutSection2Props) {
   const [shapes, setShapes] = useState<FloatingShape[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { triggerCurtain } = useCurtain();
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
@@ -234,18 +236,15 @@ export default function AboutSection2({ isActive = false, onNavigate }: AboutSec
             <strong>Es un programa para los que están listos para rifársela.</strong>
           </p>
           <div className="about-btns">
-            <a
-              href="#contacto"
-              className="btn btn-primario opacity-0"
+            <button
+              className="btn btn-primario opacity-0 cursor-pointer"
               onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate("contacto", 5);
-                }
+                e.preventDefault();
+                triggerCurtain("/aplica");
               }}
             >
               APLICA AHORA
-            </a>
+            </button>
             <a
               href="#provocacion"
               className="btn btn-secundario opacity-0"

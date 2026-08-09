@@ -307,11 +307,15 @@ export default function PlanMes1({ isActive = false }: PlanMes1Props) {
                 className={`mobile-dot ${activeMobileIndex === idx ? "active" : ""}`}
                 onClick={() => setActiveMobileIndex(idx)}
                 style={{
-                  backgroundColor: activeMobileIndex === idx ? "#2ECDB7" : "rgba(255, 255, 255, 0.25)",
-                  boxShadow: activeMobileIndex === idx ? "0 0 8px #2ECDB7" : "none",
+                  backgroundColor: activeMobileIndex === idx ? "#2ECDB7" : "rgba(255, 255, 255, 0.08)",
+                  color: activeMobileIndex === idx ? "#050B14" : "rgba(255, 255, 255, 0.8)",
+                  borderColor: activeMobileIndex === idx ? "#2ECDB7" : "rgba(255, 255, 255, 0.2)",
+                  boxShadow: activeMobileIndex === idx ? "0 0 10px #2ECDB7" : "none",
                 }}
                 aria-label={`Sesión ${idx + 1}`}
-              />
+              >
+                <span className="mobile-pill-text">{`SESIÓN ${idx + 1}`}</span>
+              </button>
             ))}
           </div>
 

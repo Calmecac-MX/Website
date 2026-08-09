@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useCurtain } from "./CurtainContext";
 
 interface BottomMenuProps {
   activeSlide?: number;
@@ -10,6 +11,7 @@ interface BottomMenuProps {
 export default function BottomMenu({ activeSlide }: BottomMenuProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { triggerCurtain } = useCurtain();
 
   const isHome = pathname === "/";
   const isNosotros = pathname === "/nosotros";
@@ -183,9 +185,12 @@ export default function BottomMenu({ activeSlide }: BottomMenuProps) {
 
       {/* Mobile Bottom Navigation Bar */}
       <div className="mobile-bottom-nav-bar">
-        <a href="#contacto" className="mobile-comenzar-btn">
+        <button
+          onClick={() => triggerCurtain("/aplica")}
+          className="mobile-comenzar-btn cursor-pointer bg-transparent border-0 font-inherit"
+        >
           Comenzar
-        </a>
+        </button>
         <button
           className={`mobile-hamburger-btn ${isOpen ? "open" : ""}`}
           onClick={() => setIsOpen(!isOpen)}

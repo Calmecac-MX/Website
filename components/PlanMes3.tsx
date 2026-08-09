@@ -293,14 +293,18 @@ export default function PlanMes3({ isActive = false }: PlanMes3Props) {
             {sessions.map((_, idx) => (
               <button
                 key={idx}
-                className={`mobile-dot w-2 h-2 rounded-full transition-all`}
+                className={`mobile-dot ${activeMobileIndex === idx ? "active" : ""}`}
                 onClick={() => setActiveMobileIndex(idx)}
                 style={{
-                  backgroundColor: activeMobileIndex === idx ? "#ff4ea8" : "rgba(255, 255, 255, 0.25)",
-                  boxShadow: activeMobileIndex === idx ? "0 0 8px #ff4ea8" : "none",
+                  backgroundColor: activeMobileIndex === idx ? "#ff4ea8" : "rgba(255, 255, 255, 0.08)",
+                  color: activeMobileIndex === idx ? "#050B14" : "rgba(255, 255, 255, 0.8)",
+                  borderColor: activeMobileIndex === idx ? "#ff4ea8" : "rgba(255, 255, 255, 0.2)",
+                  boxShadow: activeMobileIndex === idx ? "0 0 10px #ff4ea8" : "none",
                 }}
                 aria-label={`Sesión ${idx + 1}`}
-              />
+              >
+                <span className="mobile-pill-text">{`SESIÓN ${idx + 1}`}</span>
+              </button>
             ))}
           </div>
 

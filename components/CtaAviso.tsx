@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useCurtain } from "./CurtainContext";
 
 interface CtaAvisoProps {
   isModal?: boolean;
@@ -17,6 +18,7 @@ export default function CtaAviso({ isModal = false, initialStep = 1, onAccept, o
   const [isShaking, setIsShaking] = useState(false);
   const [isRedAlert, setIsRedAlert] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { triggerCurtain } = useCurtain();
 
   useEffect(() => {
     setMounted(true);
@@ -33,13 +35,8 @@ export default function CtaAviso({ isModal = false, initialStep = 1, onAccept, o
     e.preventDefault();
     if (onAccept) {
       onAccept();
-    } else if (onNavigate) {
-      onNavigate("contacto", 5);
     } else {
-      const contactSection = document.getElementById("contacto");
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: "smooth" });
-      }
+      triggerCurtain("/aplica");
     }
   };
 

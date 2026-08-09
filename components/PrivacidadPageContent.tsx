@@ -19,7 +19,7 @@ export default function PrivacidadPageContent() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText("legal@rifatela.lol");
+    navigator.clipboard.writeText("legal@calmecac.lat");
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -391,7 +391,7 @@ export default function PrivacidadPageContent() {
             </p>
             <div className="bg-[#0B132B] border border-[var(--menta)]/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="text-xs sm:text-sm text-gray-300">
-                Escríbenos a: <span className="font-mono text-[var(--menta)] font-semibold">legal@rifatela.lol</span>
+                Escríbenos a: <span className="font-mono text-[var(--menta)] font-semibold">legal@calmecac.lat</span>
               </div>
               <button
                 onClick={handleCopyEmail}
@@ -420,7 +420,7 @@ export default function PrivacidadPageContent() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="mailto:legal@rifatela.lol"
+              href="mailto:legal@calmecac.lat"
               className="btn btn-primario w-full sm:w-auto"
             >
               ENVIAR CORREO A LEGAL
@@ -429,7 +429,7 @@ export default function PrivacidadPageContent() {
               onClick={handleCopyEmail}
               className="btn btn-secundario w-full sm:w-auto"
             >
-              {copied ? "¡CORREO COPIADO AL PORTAPAPELES!" : "COPIAR LEGAL@RIFATELA.LOL"}
+              {copied ? "¡CORREO COPIADO AL PORTAPAPELES!" : "COPIAR LEGAL@CALMECAC.LAT"}
             </button>
           </div>
         </div>

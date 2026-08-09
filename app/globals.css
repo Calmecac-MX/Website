@@ -15,6 +15,13 @@
   --jade: #048179;
   --magenta: #ff4ea8;
 
+  /* Secondary Accent & Highlight Palette */
+  --dorado-solar: #FFB800;
+  --coral-neon: #FF6B35;
+  --magenta-neon: #FF4EA8;
+  --menta-electrico: #2ECDB7;
+  --violeta-estelar: #9D4EDD;
+
   /* Fonts */
   --font-heading: var(--font-roboto-condensed), sans-serif;
   --font-subheading: var(--font-roboto), sans-serif;
@@ -52,10 +59,63 @@
   --color-cyan: var(--cyan);
   --color-jade: var(--jade);
   --color-magenta: var(--magenta);
+  --color-dorado-solar: var(--dorado-solar);
+  --color-coral-neon: var(--coral-neon);
+  --color-magenta-neon: var(--magenta-neon);
+  --color-menta-electrico: var(--menta-electrico);
+  --color-violeta-estelar: var(--violeta-estelar);
   
   --font-heading: var(--font-heading);
   --font-subheading: var(--font-subheading);
   --font-body: var(--font-body);
+}
+
+/* Secondary Highlight & Accent Utility Classes */
+.highlight-gold {
+  color: var(--dorado-solar);
+  text-shadow: 0 0 12px rgba(255, 184, 0, 0.35);
+}
+.highlight-coral {
+  color: var(--coral-neon);
+  text-shadow: 0 0 12px rgba(255, 107, 53, 0.35);
+}
+.highlight-magenta {
+  color: var(--magenta-neon);
+  text-shadow: 0 0 12px rgba(255, 78, 168, 0.35);
+}
+.highlight-mint {
+  color: var(--menta-electrico);
+  text-shadow: 0 0 12px rgba(46, 205, 183, 0.35);
+}
+.highlight-violet {
+  color: var(--violeta-estelar);
+  text-shadow: 0 0 12px rgba(157, 78, 221, 0.35);
+}
+
+.badge-gold {
+  background: rgba(255, 184, 0, 0.12);
+  border: 1px solid rgba(255, 184, 0, 0.4);
+  color: var(--dorado-solar);
+}
+.badge-coral {
+  background: rgba(255, 107, 53, 0.12);
+  border: 1px solid rgba(255, 107, 53, 0.4);
+  color: var(--coral-neon);
+}
+.badge-magenta {
+  background: rgba(255, 78, 168, 0.12);
+  border: 1px solid rgba(255, 78, 168, 0.4);
+  color: var(--magenta-neon);
+}
+.badge-mint {
+  background: rgba(46, 205, 183, 0.12);
+  border: 1px solid rgba(46, 205, 183, 0.4);
+  color: var(--menta-electrico);
+}
+.badge-violet {
+  background: rgba(157, 78, 221, 0.12);
+  border: 1px solid rgba(157, 78, 221, 0.4);
+  color: var(--violeta-estelar);
 }
 
 html {
@@ -1133,6 +1193,9 @@ body.swipe-slider-active .plan-section {
   overflow: visible;
   justify-content: center;
   align-items: center;
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .footer-quote-inner {
@@ -3697,28 +3760,42 @@ body.swipe-slider-active .cb-section {
     transform: scale(0.92);
   }
 
-  /* Mobile Dots Navigation styles */
+  /* Mobile Dots/Pills Navigation styles */
   .mobile-dots-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     z-index: 10;
+    flex-wrap: wrap;
   }
 
   .mobile-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.25);
-    border: none;
-    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.75);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    white-space: nowrap;
   }
 
   .mobile-dot.active {
-    transform: scale(1.2);
+    transform: scale(1.05);
+    font-weight: 900;
+  }
+
+  .mobile-pill-text {
+    display: inline-block;
+    line-height: 1;
   }
 }
 
