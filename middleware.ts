@@ -53,13 +53,13 @@ export function middleware(request: NextRequest) {
 
   let response: NextResponse;
 
-  // Domain rewrite: If request comes from aplica.clamecac.lat or aplica.calmecac.lat root, rewrite to /aplica
-  if (
-    (hostname.startsWith("aplica.") ||
-      hostname.includes("aplica.clamecac.lat") ||
-      hostname.includes("aplica.calmecac.lat")) &&
-    url.pathname === "/"
-  ) {
+  // Domain rewrite: If request comes from aplica.clamecac.lat or aplica.calmecac.lat, rewrite all paths to /aplica
+  const isAplicaDomain =
+    hostname.startsWith("aplica.") ||
+    hostname.includes("aplica.clamecac.lat") ||
+    hostname.includes("aplica.calmecac.lat");
+
+  if (isAplicaDomain) {
     url.pathname = "/aplica";
     response = NextResponse.rewrite(url);
   } else {
@@ -87,6 +87,6 @@ export const config = {
     /*
      * Match all request paths except static files and images
      */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js)$).*)",
   ],
 };
