@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Header from "@/components/Header";
 import AplicaClient from "@/components/AplicaClient";
 
@@ -17,7 +18,18 @@ export default function AplicaPage() {
     <div className="w-full h-screen w-screen bg-[#050B14] text-white overflow-hidden relative">
       <Header />
       <main className="absolute inset-0 w-full h-full flex flex-col overflow-hidden">
-        <AplicaClient />
+        <Suspense
+          fallback={
+            <div className="w-full h-full flex-1 flex flex-col items-center justify-center bg-[#050B14] text-center p-6">
+              <div className="w-12 h-12 border-4 border-[#2ECDB7]/20 border-t-[#2ECDB7] rounded-full animate-spin mb-4" />
+              <p className="text-xs font-mono text-[#2ECDB7] tracking-widest uppercase">
+                CARGANDO FORMULARIO DE POSTULACIÓN...
+              </p>
+            </div>
+          }
+        >
+          <AplicaClient />
+        </Suspense>
       </main>
     </div>
   );
